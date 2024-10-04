@@ -1,0 +1,112 @@
+/* Importing a Google Font for improved aesthetics */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to top, #c9c9ff 50%, #6e6ef6 90%);
+    margin: 0;
+    padding: 0;
+}
+
+/* Outer container to center content */
+.outer {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px; /* Responsive padding */
+}
+
+/* Main container for the login card */
+.container {
+    width: 100%;
+    max-width: 400px; /* Maximum width for the login form */
+}
+
+/* Styling the login card */
+.login-card {
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    background-color: #fff; /* White background for contrast */
+}
+
+/* Header styling for the card */
+mat-card-header {
+    text-align: center; /* Centering header text */
+}
+
+/* Updated title styling */
+mat-card-title {
+    font-weight: 700; /* Bold title */
+    font-size: 32px; /* Larger font size for the title */
+    color: #6e6ef6; /* Color matching the theme */
+    letter-spacing: 1px; /* Modern letter spacing */
+    margin-bottom: 10px; /* Space below the title */
+}
+
+/* Form field styling */
+.mat-form-field {
+    width: 100%; /* Full width */
+    margin-bottom: 15px; /* Space between fields */
+}
+
+/* Input styling */
+.mat-form-field input {
+    font-size: 16px; /* Font size for input */
+    color: #333; /* Dark text color for readability */
+}
+
+/* Submit Button Styling */
+.btn-login {
+    width: 100%; /* Full width for button */
+    height: 45px; /* Height for a more substantial look */
+    font-size: 16px; /* Font size for button text */
+    text-transform: uppercase; /* Uppercase for button text */
+    letter-spacing: 1px; /* Slight letter spacing for modern look */
+    margin-top: 1.5rem; /* Margin above the button */
+    background-color: #6e6ef6; /* Main button color */
+    color: #fff; /* White text for contrast */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+}
+
+/* Button Hover Effect */
+.btn-login:hover {
+    background-color: #5b5bf1; /* Darker color on hover */
+    transform: translateY(-3px); /* Lift the button on hover */
+}
+
+/* Link styling for 'Forgot Password' */
+#forget {
+    font-size: 14px; /* Font size for the link */
+    color: #6e6ef6; /* Link color */
+    text-decoration: none; /* Remove underline */
+}
+
+#forget:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+/* Error message styling */
+.error-message {
+    margin-top: 1rem; /* Space above the error message */
+    color: red; /* Red color for errors */
+    text-align: center; /* Center the error message */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .login-card {
+        padding: 15px; /* Reduce padding on smaller screens */
+    }
+
+    mat-card-title {
+        font-size: 26px; /* Smaller title font size */
+    }
+
+    .btn-login {
+        height: 40px; /* Smaller button height */
+        font-size: 14px; /* Smaller button font size */
+    }
+}

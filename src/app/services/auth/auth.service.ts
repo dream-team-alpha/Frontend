@@ -10,6 +10,11 @@ interface LoginCredentials {
   password: string;
 }
 
+interface SubAdminCredentials {
+  email: string;
+  password: string;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -80,6 +85,17 @@ export class AuthService {
         })
       );
   }
+
+
+  // Sub-Admin Login
+  loginSubAdmin(credentials: SubAdminCredentials): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.post<any>(`${this.apiUrl}/api/subadmin/login`, credentials, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
 
   // Check if the admin is Logged In (based on token)
   isLoggedIn(): boolean {
