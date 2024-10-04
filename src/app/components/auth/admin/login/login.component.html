@@ -1,1 +1,45 @@
-<p>login works!</p>
+<div class="outer">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+          <mat-card class="login-card">
+            <mat-card-header>
+              <mat-card-title class="text-center">Login</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <form [formGroup]="loginForm">
+                <mat-form-field class="w-100">
+                  <mat-label>Username</mat-label>
+                  <input matInput placeholder="Username" formControlName="username">
+                  <mat-error *ngIf="loginForm.controls['username'].dirty && loginForm.hasError('required', 'username')">
+                    *Username is required
+                  </mat-error>
+                </mat-form-field>
+  
+                <mat-form-field class="w-100">
+                  <mat-label>Password</mat-label>
+                  <input [type]="type" matInput placeholder="Password" formControlName="password">
+                  <button mat-icon-button matSuffix (click)="hideShowPass()" tabindex="-1">
+                    <mat-icon>{{ isText ? 'visibility' : 'visibility_off' }}</mat-icon>
+                  </button>
+                  <mat-error *ngIf="loginForm.controls['password'].dirty && loginForm.hasError('required', 'password')">
+                    *Password is required
+                  </mat-error>
+                </mat-form-field>
+  
+                <div class="text-right">
+                  <a mat-button id="forget" class="font-weight-bold">Forgot Password?</a>
+                </div>
+  
+                <button mat-raised-button color="primary" class="w-100 mt-3" (click)="onSubmit()" [disabled]="!loginForm.valid">
+                  LOGIN
+                </button>
+              </form>
+            </mat-card-content>
+  
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+  

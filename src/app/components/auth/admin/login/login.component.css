@@ -1,0 +1,114 @@
+/* Importing a Google Font for the heading */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+/* Centering the content */
+.outer {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to top, #c9c9ff 50%, #6e6ef6 90%);
+    padding: 0 15px;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-card {
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+/* Tighter spacing for the card header */
+mat-card-header {
+    padding-bottom: 10px;
+}
+
+/* Updated Login Heading Styling */
+mat-card-title {
+    font-family: 'Poppins', sans-serif; /* Elegant font */
+    font-weight: 700; /* Increase boldness for better visibility */
+    font-size: 32px; /* Slightly larger font size */
+    text-align: center;
+    color: #6e6ef6; /* Softer color to blend with background */
+    letter-spacing: 1px; /* Modern letter spacing */
+    background: none; /* Remove background gradient */
+    text-transform: uppercase; /* Uppercase for a more polished look */
+    margin-bottom: 10px; /* Space below heading */
+    transition: all 0.3s ease-in-out;
+}
+
+mat-card-title:hover {
+    color: #4a4ae3; /* Darker on hover */
+    transform: scale(1.02); /* Subtle hover effect */
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1); /* Gentle shadow on hover */
+}
+
+
+/* Input Fields - Added custom font and improved layout */
+.mat-form-field {
+    width: 100%;
+    margin-bottom: 15px;
+    font-family: 'Poppins', sans-serif; /* Apply custom font */
+}
+
+.mat-form-field input {
+    font-size: 16px; /* Increase input font size */
+    color: #333;
+}
+
+/* Button Styling */
+button[mat-raised-button] {
+    width: 100%;
+    height: 45px;
+    font-size: 16px;
+    margin-top: 1.5rem;
+    font-family: 'Poppins', sans-serif; /* Apply custom font */
+    text-transform: uppercase;
+    letter-spacing: 1px; /* Slight letter spacing for modern look */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Button shadow for depth */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+}
+
+/* Button Hover Effect */
+button[mat-raised-button]:hover {
+    background-color: #5b5bf1; /* Darker color on hover */
+    transform: translateY(-3px); /* Lift the button on hover */
+}
+
+/* Link styling */
+#forget {
+    font-size: 14px;
+    color: #5b5bf1;
+    text-transform: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+#forget:hover {
+    text-decoration: underline;
+}
+
+/* Text Alignment */
+.text-right {
+    text-align: right;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .login-card {
+        padding: 15px;
+    }
+
+    mat-card-title {
+        font-size: 26px;
+    }
+
+    button[mat-raised-button] {
+        height: 40px;
+        font-size: 14px;
+    }
+}
