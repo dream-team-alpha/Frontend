@@ -5,8 +5,11 @@ import { DashboardComponent } from './components/dashboard/dashboard/dashboard.c
 import { AuthGuard } from './gaurds/auth.guard';
 import { SubAdminLoginComponent } from './components/auth/sub-admin/sub-admin-login/sub-admin-login.component';
 import { SubAdminDashboardComponent } from './components/sub-admin-dashboard/sub-admin-dashboard/sub-admin-dashboard.component';
+import { HomeComponent } from './components/home/home/home.component';
 
 const routes: Routes = [
+  { path: 'home', component: HomeComponent },
+  
   { path: 'support-team-admin-login', component: LoginComponent },
 
   { path: '', redirectTo: '/home', pathMatch: 'full' }, 

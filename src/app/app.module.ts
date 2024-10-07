@@ -26,6 +26,9 @@ import { FormsModule } from '@angular/forms'; // For template-driven forms
 import { HttpClientModule } from '@angular/common/http';
 import { SubAdminLoginComponent } from './components/auth/sub-admin/sub-admin-login/sub-admin-login.component';
 import { SubAdminDashboardComponent } from './components/sub-admin-dashboard/sub-admin-dashboard/sub-admin-dashboard.component';
+import { UserChatBoxComponent } from './components/home/user-chat-box/user-chat-box.component';
+import { HomeComponent } from './components/home/home/home.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,7 +36,9 @@ import { SubAdminDashboardComponent } from './components/sub-admin-dashboard/sub
     LoginComponent,
     DashboardComponent,
     SubAdminLoginComponent,
-    SubAdminDashboardComponent
+    SubAdminDashboardComponent,
+    UserChatBoxComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
