@@ -1,0 +1,98 @@
+/* Navbar Styles */
+.navbar {
+    background-color: #fff; /* Background color */
+    padding: 10px 20px; /* Padding */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+    position: relative; /* Position for dropdowns or other elements */
+}
+
+.navbar-container {
+    display: flex; /* Flex layout */
+    justify-content: space-between; /* Space between brand and toggle */
+    align-items: center; /* Center vertically */
+}
+
+.navbar-brand {
+    display: flex; /* Flexbox for brand */
+    align-items: center; /* Center vertically */
+}
+
+.navbar-brand img {
+    height: 40px; /* Logo height */
+    width: auto; /* Maintain aspect ratio */
+    margin-right: 15px; /* Space between logo and text */
+}
+
+.navbar-toggle {
+    background: none; /* No background */
+    border: none; /* No border */
+    cursor: pointer; /* Pointer cursor */
+    display: none; /* Hide on larger screens */
+    color: goldenrod; /* Icon color */
+    font-size: 24px; /* Icon size */
+    transition: color 0.3s; /* Smooth color transition */
+    margin-left: auto; /* Push the toggle button to the right */
+}
+
+.navbar-menu {
+    list-style: none; /* Remove list styles */
+    display: flex; /* Horizontal layout */
+    padding: 0; /* No padding */
+    margin: 0; /* No margin */
+}
+
+.navbar-item {
+    margin-left: 20px; /* Space between items */
+    position: relative; /* Position for dropdowns */
+}
+
+.navbar-link {
+    color: black; /* Link color */
+    text-decoration: none; /* Remove underline */
+    padding: 10px 15px; /* Link padding */
+    display: flex; /* Flex for icon and text */
+    align-items: center; /* Center vertically */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transitions */
+}
+
+.navbar-link i {
+    margin-right: 8px; /* Space between icon and text */
+    color: goldenrod; /* Icon color */
+    transition: color 0.3s; /* Smooth color transition */
+}
+
+.navbar-link:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Hover background */
+    color: goldenrod; /* Hover text color */
+}
+
+.navbar-link:hover i {
+    color: darkgoldenrod; /* Darken icon color on hover */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .navbar-menu {
+        display: none; /* Hide menu on mobile */
+        flex-direction: column; /* Stack items */
+        position: absolute; /* Absolute positioning */
+        top: 60px; /* Position below navbar */
+        left: 0; /* Align to left */
+        background-color: white; /* Background color */
+        width: 100%; /* Full width */
+        z-index: 1000; /* Ensure it appears above other elements */
+        border-radius: 0 0 5px 5px; /* Rounded bottom corners */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for dropdown */
+        transition: max-height 0.3s ease-out; /* Smooth open/close */
+    }
+
+    .navbar-menu.active {
+        display: flex; /* Show menu when active */
+    }
+
+    .navbar-toggle {
+        display: block; /* Show toggle button */
+    }
+}

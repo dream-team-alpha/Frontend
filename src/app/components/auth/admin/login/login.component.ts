@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
           }
 
           // Redirect to the dashboard or protected page
-          this.router.navigate(['/support-team-admin-dashbboard']);
+          this.router.navigate(['/support-team-admin-dashboard']);
         },
         (error: any) => {
           console.error('Login failed', error);

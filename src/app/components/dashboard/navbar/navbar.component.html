@@ -1,0 +1,32 @@
+<nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-brand">
+            <img src="https://keabuilder.com/images/kblogo.png" alt="Logo">
+            <button class="navbar-toggle" aria-label="Toggle navigation" (click)="toggleMenu()">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        <ul class="navbar-menu" [class.active]="isMenuOpen">
+            <li class="navbar-item">
+                <a routerLink="/support-team-admin-dashboard" class="navbar-link">
+                    <i class="fa fa-dashboard"></i> Dashboard
+                </a>
+            </li>
+            <li class="navbar-item">
+                <a routerLink="/support-team-admin-dashboard" class="navbar-link">
+                    <i class="fa-solid fa-user"></i> Manage Profile
+                </a>
+            </li>
+            <li class="navbar-item">
+                <a routerLink="/manage-sub-admin" class="navbar-link">
+                    <i class="fa fa-users"></i> Sub Admins
+                </a>
+            </li>
+            <li class="navbar-item">
+                <a (click)="openLogoutDialog()" class="navbar-link" href="javascript:void(0)">
+                    <i class="fa fa-sign-out"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

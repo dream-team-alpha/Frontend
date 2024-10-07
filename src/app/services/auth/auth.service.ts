@@ -105,12 +105,13 @@ export class AuthService {
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An error occurred. Please try again.';
     if (error.error instanceof ErrorEvent) {
-      // Client-side or network error
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      // Backend error
       errorMessage = `Error: ${error.message}`;
     }
+    console.error(errorMessage); // Log error for debugging
+    // You might want to show this to the user using a service or a snack bar
     return throwError(errorMessage);
-  }
+}
+
 }

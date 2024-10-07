@@ -1,0 +1,11 @@
+<div [@fadeInOut]>
+    <h2 mat-dialog-title>Confirm Logout</h2>
+    <mat-dialog-content>
+      <p>Are you sure you want to logout?</p>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-button (click)="onCancel()">Cancel</button>
+      <button mat-button color="primary" (click)="onConfirm()">Logout</button>
+    </mat-dialog-actions>
+  </div>
+  

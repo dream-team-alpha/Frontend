@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SignUpComponent } from './components/auth/admin/sign-up/sign-up.component';
 import { LoginComponent } from './components/auth/admin/login/login.component';
-import { DashboardComponent } from './components/dashboard/dashboard/dashboard.component';  // Import HttpClientModule
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 //angular material imports
@@ -28,17 +27,22 @@ import { SubAdminLoginComponent } from './components/auth/sub-admin/sub-admin-lo
 import { SubAdminDashboardComponent } from './components/sub-admin-dashboard/sub-admin-dashboard/sub-admin-dashboard.component';
 import { UserChatBoxComponent } from './components/home/user-chat-box/user-chat-box.component';
 import { HomeComponent } from './components/home/home/home.component';
+import { NavbarComponent } from './components/dashboard/navbar/navbar.component';
+import { AdminDashboardComponent } from './components/dashboard/admin-dashboard/admin-dashboard.component';
+import { LogoutComponent } from './components/dashboard/navbar-components/logout/logout.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SignUpComponent,
     LoginComponent,
-    DashboardComponent,
     SubAdminLoginComponent,
     SubAdminDashboardComponent,
     UserChatBoxComponent,
-    HomeComponent
+    HomeComponent,
+    NavbarComponent,
+    AdminDashboardComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,
@@ -54,6 +58,7 @@ import { HomeComponent } from './components/home/home/home.component';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]
