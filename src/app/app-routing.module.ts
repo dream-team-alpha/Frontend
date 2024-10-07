@@ -6,13 +6,20 @@ import { SubAdminLoginComponent } from './components/auth/sub-admin/sub-admin-lo
 import { SubAdminDashboardComponent } from './components/sub-admin-dashboard/sub-admin-dashboard/sub-admin-dashboard.component';
 import { HomeComponent } from './components/home/home/home.component';
 import { AdminDashboardComponent } from './components/dashboard/admin-dashboard/admin-dashboard.component';
+import { ManageSubAdminsComponent } from './components/dashboard/navbar-components/manage-sub-admins/manage-sub-admins.component';
+import { UserChatBoxComponent } from './components/home/user-chat-box/user-chat-box.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
     
   { path: 'support-team-admin-login', component: LoginComponent },
   
-  { path: 'support-team-admin-dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard] },
+  { path: 'support-team-admin-dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard],
+    children: [
+      // Add the new route as a child of AdminDashboardComponent
+      { path: 'manage-sub-admins', component: ManageSubAdminsComponent }
+    ]
+   },
   
   { path: 'sub-admin-login', component: SubAdminLoginComponent }, // Sub-admin login route
   
@@ -21,6 +28,8 @@ const routes: Routes = [
     component: SubAdminDashboardComponent,
     canActivate: [AuthGuard],  // Protect the sub-admin dashboard
   },
+
+  {path:'user-chat-box', component:UserChatBoxComponent},
 
   { path: '**', redirectTo: 'home' },
 ];

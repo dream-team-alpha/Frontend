@@ -30,6 +30,8 @@ import { HomeComponent } from './components/home/home/home.component';
 import { NavbarComponent } from './components/dashboard/navbar/navbar.component';
 import { AdminDashboardComponent } from './components/dashboard/admin-dashboard/admin-dashboard.component';
 import { LogoutComponent } from './components/dashboard/navbar-components/logout/logout.component';
+import { ManageSubAdminsComponent } from './components/dashboard/navbar-components/manage-sub-admins/manage-sub-admins.component';
+import { ModalComponent } from './components/dashboard/navbar-components/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,9 @@ import { LogoutComponent } from './components/dashboard/navbar-components/logout
     HomeComponent,
     NavbarComponent,
     AdminDashboardComponent,
-    LogoutComponent
+    LogoutComponent,
+    ManageSubAdminsComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +62,9 @@ import { LogoutComponent } from './components/dashboard/navbar-components/logout
     MatIconModule,
     MatButtonModule,
     MatCardModule,
-    MatDialogModule
+    MatDialogModule,
+    MatListModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

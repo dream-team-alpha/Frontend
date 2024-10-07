@@ -1,0 +1,14 @@
+<div class="modal" [ngClass]="{'is-active': isOpen}">
+    <div class="modal-background" (click)="close()"></div>
+    <div class="modal-content">
+      <div class="box">
+        <h2>{{ title }}</h2>
+        <ng-content></ng-content>
+        <div class="modal-footer">
+          <button class="btn" (click)="close()">Cancel</button>
+          <button class="btn btn-primary" (click)="confirm()">Confirm</button>
+        </div>
+      </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close" (click)="close()"></button>
+  </div>
