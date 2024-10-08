@@ -1,22 +1,17 @@
 <div class="chat-dashboard">
-    <app-sidebar></app-sidebar>
-    <div>
-        
+  <app-sidebar></app-sidebar>
+  <div class="window-chat">
+    <div *ngIf="messages.length === 0">Loading messages...</div>
+    <div *ngFor="let message of messages" class="message">
+      <div [class.sender]="message.senderType === 'user'" [class.receiver]="message.senderType === 'admin'">
+        <p>{{ message.content }}</p>
+        <span>{{ message.createdAt | date: 'short' }}</span>
+      </div>
     </div>
-    <div class="window-chat">
-      <div *ngIf="messages.length === 0">Loading messages...</div>
-      <div *ngFor="let message of messages" class="message">
-        <div [class.sender]="message.senderType === 'user'" [class.receiver]="message.senderType === 'admin'">
-          <p>{{ message.content }}</p>
-          <span>{{ message.createdAt | date: 'short' }}</span>
-        </div>
-      </div>
-  
-      <!-- Input field for sending messages -->
-      <div class="chat-input">
-        <input [(ngModel)]="newMessageContent" placeholder="Type a message" />
-        <button (click)="sendMessage()">Send</button>
-      </div>
+
+    <div class="chat-input">
+      <input [(ngModel)]="newMessageContent" placeholder="Type a message" />
+      <button (click)="sendMessage()">Send</button>
     </div>
   </div>
-  
+</div>

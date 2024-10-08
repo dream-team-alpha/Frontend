@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { ChatService } from 'src/app/services/chat/chat.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { WebSocketService } from 'src/app/services/web-socket/websocket.service';
 
@@ -26,30 +27,21 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   isDetailsSubmitted = false;
   userId: string = '';
   adminId: number = 3; // Admin ID fixed
-  newMessageSubscription!: Subscription;
+  private newMessageSubscription!: Subscription;
 
   constructor(
     private userService: UserService,
-    private webSocketService: WebSocketService
+    private webSocketService: WebSocketService,
+    private chatService: ChatService
   ) {}
 
   ngOnInit(): void {
     this.loadUserDetails();
     this.loadMessages();
 
-    // Subscribe to incoming messages from the WebSocket after details are submitted
-    this.newMessageSubscription = this.webSocketService.receiveNewMessage().subscribe((message: Message) => {
-      console.log('New message received:', message);
-      if (!this.isMessageDuplicate(message)) {
-        this.messages.push(message);
-        this.scrollToBottom();
-        this.updateMessageCache();
-      }
-    });
-  
-    // Connect to WebSocket if details have already been submitted
     if (this.isDetailsSubmitted) {
-      this.webSocketService.connect(Number(this.userId));
+      this.webSocketService.connect();
+      this.subscribeToNewMessages(); // Subscribe to new messages if details are submitted
     }
   }
 
@@ -61,9 +53,12 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   }
 
   toggleChat(): void {
-    this.isChatOpen = !this.isChatOpen;
+    this.isChatOpen = !this.isChatOpen; // Toggle chat box open state
+    if (this.isChatOpen) {
+      this.scrollToBottom(); // Scroll to the bottom when chat box is opened
+    }
   }
-
+  
   isValidEmail(email: string): boolean {
     const regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
     return regex.test(email);
@@ -90,16 +85,8 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
         this.saveUserDetails();
 
         // Connect to Socket.IO after details are submitted
-        this.webSocketService.connect(Number(this.userId));
-
-        // Subscribe to incoming messages
-        this.newMessageSubscription = this.webSocketService.receiveNewMessage().subscribe((message: Message) => {
-          if (!this.isMessageDuplicate(message)) {
-            this.messages.push(message);
-            this.scrollToBottom(); // Scroll to bottom when receiving message
-            this.updateMessageCache(); // Update messages in storage
-          }
-        });
+        this.webSocketService.connect();
+        this.subscribeToNewMessages(); // Subscribe to incoming messages
       },
       (error) => {
         console.error('Error creating user:', error);
@@ -107,9 +94,21 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
     );
   }
 
+  private subscribeToNewMessages(): void {
+    // Subscribe to incoming messages only once
+    if (!this.newMessageSubscription) {
+      this.newMessageSubscription = this.webSocketService.receiveNewMessage().subscribe((message: Message) => {
+        if (!this.isMessageDuplicate(message)) {
+          this.messages.push(message);
+          this.scrollToBottom(); // Scroll to bottom when receiving message
+          this.updateMessageCache(); // Update messages in storage
+        }
+      });
+    }
+  }
+
   sendMessage(): void {
-    // Validate message content
-    if (this.message.trim() === '') return;
+    if (this.message.trim() === '') return; // Avoid sending empty messages
 
     const messageData: Message = {
       senderId: this.userId,
@@ -120,14 +119,24 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       createdAt: new Date().toISOString(),
     };
 
-    // Emit the message to the Socket.IO server
-    this.webSocketService.sendMessage(messageData);
-
-    // Push the message locally to display it in the chat
-    this.messages.push(messageData);
-    this.updateMessageCache(); // Update messages in storage
-    this.scrollToBottom(); // Scroll to bottom after sending message
-    this.message = ''; // Clear input field
+    // Prevent sending duplicate messages
+    if (!this.isMessageDuplicate(messageData)) {
+      // Send the message to the backend
+      this.chatService.sendMessage(messageData).subscribe(
+        response => {
+          console.log('Message saved to backend:', response);
+          // Now we can safely push the message to the local messages array
+          this.messages.push(messageData);
+          this.webSocketService.sendMessage(messageData); // Send message through WebSocket
+          this.updateMessageCache(); // Update messages in storage
+          this.scrollToBottom(); // Scroll to bottom after sending message
+          this.message = ''; // Clear input field
+        },
+        error => {
+          console.error('Error sending message to backend:', error);
+        }
+      );
+    }
   }
 
   private isMessageDuplicate(newMessage: Message): boolean {
@@ -163,8 +172,8 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       this.email = userDetails.email;
       this.isDetailsSubmitted = true;
 
-      // Connect to WebSocket for existing user
-      this.webSocketService.connect(Number(this.userId));
+      this.webSocketService.connect();
+      this.subscribeToNewMessages(); // Subscribe to incoming messages
     }
   }
 

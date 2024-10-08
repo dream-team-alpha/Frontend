@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
+import { Message } from 'src/app/components/home/user-chat-box/user-chat-box.component';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class ChatService {
     return this.http.get(`${this.apiUrl}/history/${userId}/${adminId}`, { headers });
   }
 
-  sendMessage(message: any): Observable<any> {
+  sendMessage(message: Message): Observable<any> {
     return this.http.post(`${this.apiUrl}/send`, message);
   }
 }

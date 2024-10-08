@@ -11,11 +11,12 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./chat-dashboard.component.css']
 })
 export class ChatDashboardComponent implements OnInit, OnDestroy {
-  userId!: string; // Keep this as a string to retrieve from route
-  adminId: string = '3'; // Admin ID is a string for consistency with messages
-  messages: Message[] = []; // Define messages using the Message interface
-  newMessageContent: string = ''; // Variable to hold the content of the new message
-  newMessageSubscription!: Subscription;
+  userId!: string;
+  adminId: string = '3';
+  messages: Message[] = [];
+  newMessageContent: string = '';
+  newMessageSubscription: Subscription | undefined;
+  private isSubscribed: boolean = false; // Flag to check if the subscription is active
 
   constructor(
     private route: ActivatedRoute,
@@ -24,26 +25,33 @@ export class ChatDashboardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Subscribe to the route parameters to detect changes
+    // Subscribe to route parameters
     this.route.paramMap.subscribe(params => {
-      this.userId = params.get('id')!; // Ensure you retrieve as a string
-      this.loadMessages(); // Fetch messages for the new user ID
-      this.webSocketService.connect(Number(this.userId)); // Connect to WebSocket with user ID
+      this.userId = params.get('id')!;
+      this.loadMessages();
+      
+      // Connect to WebSocket
+      this.webSocketService.connect();
 
-      // Subscribe to incoming messages from WebSocket
-      this.newMessageSubscription = this.webSocketService.receiveNewMessage().subscribe((message) => {
-        console.log('New message received:', message); // Log incoming messages
-        if (!this.isMessageDuplicate(message)) {
-          this.messages.push(message); // Push received messages into the messages array
-        }
-      });
+      // Subscribe to new messages if not already subscribed
+      if (!this.isSubscribed) {
+        this.newMessageSubscription = this.webSocketService.receiveNewMessage().subscribe((message: Message) => {
+          console.log("Received message:", message); // Log received message
+            // Check if the message already exists to prevent duplicates
+            if (!this.isMessageDuplicate(message)) {
+              this.messages.push(message); // Add the message to the list
+          }
+        });
+        this.isSubscribed = true; // Mark as subscribed
+      }
     });
   }
 
   ngOnDestroy(): void {
-    // Unsubscribe on component destruction
+    // Unsubscribe from new messages on component destruction
     if (this.newMessageSubscription) {
       this.newMessageSubscription.unsubscribe();
+      this.newMessageSubscription = undefined; // Prevent memory leaks
     }
   }
 
@@ -55,7 +63,6 @@ export class ChatDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Method to send a new message
   sendMessage(): void {
     if (this.newMessageContent.trim() !== '') {
       const message: Message = {
@@ -66,19 +73,37 @@ export class ChatDashboardComponent implements OnInit, OnDestroy {
         receiverType: 'user', // The receiver type is now user
         createdAt: new Date().toISOString(), // Ensure correct timestamp
       };
-
-      this.webSocketService.sendMessage(message); // Use Socket.IO to send message
-      this.messages.push(message); // Push the newly sent message into the messages array
-      this.newMessageContent = ''; // Clear the input field
+  
+      // Check if the message is a duplicate
+      if (!this.isMessageDuplicate(message)) {
+        this.webSocketService.sendMessage(message); // Use Socket.IO to send message
+  
+        // Send the message to the backend
+        this.chatService.sendMessage(message).subscribe(
+          response => {
+            console.log('Message saved to backend:', response);
+            // Only push the message if it was successfully sent and not already added
+            if (!this.isMessageDuplicate(message)) {
+              this.messages.push(message); // Push the newly sent message into the messages array
+            }
+            this.newMessageContent = ''; // Clear the input field
+          },
+          error => {
+            console.error('Error sending message to backend:', error);
+          }
+        );
+      }
     }
   }
+  
 
   private isMessageDuplicate(newMessage: Message): boolean {
-    return this.messages.some(
-      (msg) =>
-        msg.content === newMessage.content &&
-        msg.senderId === newMessage.senderId &&
-        msg.receiverId === newMessage.receiverId
+    // Check if the message already exists in the messages array
+    return this.messages.some(msg => 
+      msg.content === newMessage.content &&
+      msg.senderId === newMessage.senderId &&
+      msg.receiverId === newMessage.receiverId &&
+      Math.abs(new Date(msg.createdAt).getTime() - new Date(newMessage.createdAt).getTime()) < 1000 // Check if the messages were sent within 1 second
     );
   }
 }

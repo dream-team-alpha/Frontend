@@ -36,6 +36,7 @@ import { ProfileComponent } from './components/dashboard/profile/profile.compone
 import { SidebarComponent } from './components/dashboard/sidebar/sidebar.component';
 import { UserListComponent } from './components/dashboard/user-list/user-list.component';
 import { ChatDashboardComponent } from './components/dashboard/chat-dashboard/chat-dashboard.component';
+import { WebSocketService } from './services/web-socket/websocket.service';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,7 @@ import { ChatDashboardComponent } from './components/dashboard/chat-dashboard/ch
     MatListModule,
     MatSelectModule
   ],
-  providers: [],
+  providers: [WebSocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
