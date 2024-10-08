@@ -1,7 +1,7 @@
 <div class="chat-box" [class.active]="isChatOpen">
     <div class="chat-header">
         <div class="avatar">
-            <img src="https://cdn-icons-png.flaticon.com/128/15444/15444770.png" alt="" />
+            <img src="https://cdn-icons-png.flaticon.com/128/15444/15444770.png" alt="Support Team Avatar" />
         </div>
         <div class="chat-info">
             <div class="name">Support-Team</div>
@@ -49,13 +49,13 @@
         <!-- Messages display -->
         <div class="messages">
             <div *ngFor="let msg of messages">
-              <p [ngClass]="{'sent': msg.senderId === userId, 'received': msg.senderId !== userId}">
-                <strong>{{ msg.senderId === userId ? 'You' : 'Admin' }}:</strong>
-                {{ msg.content }}
-                <span class="timestamp">{{ formatDate(msg.createdAt) }}</span>
-              </p>
+                <p [ngClass]="{'sent': msg.senderType === 'user', 'received': msg.senderType === 'admin'}">
+                    <strong>{{ msg.senderType === 'user' ? 'You' : 'Admin' }}:</strong>
+                    {{ msg.content }}
+                    <span class="timestamp">{{ formatDate(msg.createdAt) }}</span>
+                </p>
             </div>
-          </div>          
+        </div>
 
         <!-- Message input area -->
         <div *ngIf="isDetailsSubmitted" class="input-area">

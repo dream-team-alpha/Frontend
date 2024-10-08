@@ -7,8 +7,8 @@ export interface Message {
   senderId: string;
   receiverId: string;
   content: string;
-  senderType: 'admin' | 'sub-admin' | 'user';
-  receiverType: 'admin' | 'sub-admin' | 'user';
+  senderType: 'admin' | 'user';
+  receiverType: 'admin' | 'user';
   createdAt: string;
 }
 
@@ -34,24 +34,30 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Existing initialization logic
-    // Subscribe to incoming messages
-    this.newMessageSubscription = this.webSocketService
-      .receiveNewMessage()
-      .subscribe((message: Message) => {
-        if (!this.isMessageDuplicate(message)) {
-          this.messages.push(message);
-          this.scrollToBottom(); // Scroll to bottom when receiving message
-        }
-      });
+    this.loadUserDetails();
+    this.loadMessages();
+
+    // Subscribe to incoming messages from the WebSocket after details are submitted
+    this.newMessageSubscription = this.webSocketService.receiveNewMessage().subscribe((message: Message) => {
+      console.log('New message received:', message);
+      if (!this.isMessageDuplicate(message)) {
+        this.messages.push(message);
+        this.scrollToBottom();
+        this.updateMessageCache();
+      }
+    });
+  
+    // Connect to WebSocket if details have already been submitted
+    if (this.isDetailsSubmitted) {
+      this.webSocketService.connect(Number(this.userId));
+    }
   }
 
   ngOnDestroy(): void {
-    // Unsubscribe and disconnect WebSocket on component destruction
+    // Unsubscribe from the message stream to prevent memory leaks
     if (this.newMessageSubscription) {
       this.newMessageSubscription.unsubscribe();
     }
-    this.webSocketService.disconnect();
   }
 
   toggleChat(): void {
@@ -64,7 +70,6 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   }
 
   submitUserDetails(): void {
-    // Validate name and email
     if (this.name.trim() === '' || this.email.trim() === '') {
       console.error('Name and Email are required');
       return;
@@ -81,17 +86,20 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
         this.userId = response.id; // Assume response contains the user ID
         this.isDetailsSubmitted = true;
 
-        // Connect to WebSocket after details are submitted
+        // Save user details to storage
+        this.saveUserDetails();
+
+        // Connect to Socket.IO after details are submitted
         this.webSocketService.connect(Number(this.userId));
 
         // Subscribe to incoming messages
-        this.newMessageSubscription = this.webSocketService
-          .receiveNewMessage()
-          .subscribe((message: Message) => {
-            if (!this.isMessageDuplicate(message)) {
-              this.messages.push(message);
-            }
-          });
+        this.newMessageSubscription = this.webSocketService.receiveNewMessage().subscribe((message: Message) => {
+          if (!this.isMessageDuplicate(message)) {
+            this.messages.push(message);
+            this.scrollToBottom(); // Scroll to bottom when receiving message
+            this.updateMessageCache(); // Update messages in storage
+          }
+        });
       },
       (error) => {
         console.error('Error creating user:', error);
@@ -112,11 +120,12 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       createdAt: new Date().toISOString(),
     };
 
-    // Emit the message to the WebSocket server
+    // Emit the message to the Socket.IO server
     this.webSocketService.sendMessage(messageData);
 
     // Push the message locally to display it in the chat
     this.messages.push(messageData);
+    this.updateMessageCache(); // Update messages in storage
     this.scrollToBottom(); // Scroll to bottom after sending message
     this.message = ''; // Clear input field
   }
@@ -143,5 +152,40 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
         messageContainer.scrollTop = messageContainer.scrollHeight;
       }
     }, 0);
+  }
+
+  // Load user details from local storage
+  private loadUserDetails(): void {
+    const userDetails = JSON.parse(localStorage.getItem('userDetails') || '{}');
+    if (userDetails && userDetails.userId) {
+      this.userId = userDetails.userId;
+      this.name = userDetails.name;
+      this.email = userDetails.email;
+      this.isDetailsSubmitted = true;
+
+      // Connect to WebSocket for existing user
+      this.webSocketService.connect(Number(this.userId));
+    }
+  }
+
+  // Save user details to local storage
+  private saveUserDetails(): void {
+    const userDetails = {
+      userId: this.userId,
+      name: this.name,
+      email: this.email,
+    };
+    localStorage.setItem('userDetails', JSON.stringify(userDetails));
+  }
+
+  // Load messages from local storage
+  private loadMessages(): void {
+    const storedMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
+    this.messages = storedMessages;
+  }
+
+  // Update messages in local storage
+  private updateMessageCache(): void {
+    localStorage.setItem('chatMessages', JSON.stringify(this.messages));
   }
 }

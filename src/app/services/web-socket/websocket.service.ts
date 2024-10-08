@@ -1,55 +1,60 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
-import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { Message } from 'src/app/components/home/user-chat-box/user-chat-box.component';
 
+export interface Message {
+  senderId: string;
+  receiverId: string;
+  content: string;
+  senderType: 'admin' | 'user';
+  receiverType: 'admin' | 'user';
+  createdAt: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class WebSocketService {
-  private socket!: Socket;  // The WebSocket connection
+  private socket: Socket;
+  private newMessageSubject = new Subject<Message>();
 
-  constructor() {}
+  constructor() {
+    this.socket = io('http://localhost:5000'); // Adjust the URL
 
-  // Method to connect to the WebSocket server, providing a user ID
-  connect(userId: number): void {
-    this.socket = io(environment.apiUrl, {
-      query: { userId: userId.toString() },  // Pass userId to server
+    this.socket.on('receiveMessage', (message: Message) => {
+      console.log('Message received from server:', message); 
+      this.newMessageSubject.next(message);
     });
 
-    this.socket.on('connect', () => {
-      console.log('Connected to WebSocket server');
+    this.socket.on('joinConfirmation', (userId: number) => {
+      console.log(`User ${userId} successfully joined the room`);
     });
 
     this.socket.on('disconnect', () => {
-      console.log('Disconnected from WebSocket server');
+      console.warn('Socket disconnected');
+    });
+
+    this.socket.on('connect', () => {
+      console.log('Socket connected');
     });
   }
 
-  // Send a message via WebSocket
+  connect(userId: number): void {
+    console.log(`Connecting with user ID: ${userId}`);
+    this.socket.emit('join', userId);
+
+    this.socket.on('joinConfirmation', (userId: number) => {
+      console.log(`User ${userId} has successfully joined the room`);
+    });
+  }
+
   sendMessage(message: Message): void {
+    console.log('Sending message:', message);
     this.socket.emit('sendMessage', message);
   }
 
-  // Receive new messages as an Observable
-  receiveNewMessage(): Observable<Message> {
-    return new Observable<Message>((observer) => {
-      this.socket.on('receiveMessage', (message: Message) => {
-        observer.next(message);
-      });
-
-      return () => {
-        this.socket.off('receiveMessage');
-      };
-    });
-  }
-
-  // Disconnect from WebSocket
-  disconnect(): void {
-    if (this.socket) {
-      this.socket.disconnect();
-    }
+  receiveNewMessage() {
+    return this.newMessageSubject.asObservable();
+    
   }
 }
