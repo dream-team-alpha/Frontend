@@ -32,6 +32,10 @@ import { AdminDashboardComponent } from './components/dashboard/admin-dashboard/
 import { LogoutComponent } from './components/dashboard/navbar-components/logout/logout.component';
 import { ManageSubAdminsComponent } from './components/dashboard/navbar-components/manage-sub-admins/manage-sub-admins.component';
 import { ModalComponent } from './components/dashboard/navbar-components/modal/modal.component';
+import { ProfileComponent } from './components/dashboard/profile/profile.component';
+import { SidebarComponent } from './components/dashboard/sidebar/sidebar.component';
+import { UserListComponent } from './components/dashboard/user-list/user-list.component';
+import { ChatDashboardComponent } from './components/dashboard/chat-dashboard/chat-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +50,11 @@ import { ModalComponent } from './components/dashboard/navbar-components/modal/m
     AdminDashboardComponent,
     LogoutComponent,
     ManageSubAdminsComponent,
-    ModalComponent
+    ModalComponent,
+    ProfileComponent,
+    SidebarComponent,
+    UserListComponent,
+    ChatDashboardComponent,
   ],
   imports: [
     BrowserModule,

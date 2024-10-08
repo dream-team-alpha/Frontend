@@ -1,0 +1,81 @@
+.chat-dashboard {
+    display: flex; /* Enable Flexbox */
+    height: 100vh; /* Full height of the viewport */
+}
+
+/* Sidebar styles */
+app-sidebar {
+    width: 27%; /* Set a fixed width for the sidebar */
+    background-color: #f1f1f1; /* Background color */
+}
+
+/* Chat component styles */
+app-chat {
+    flex: 1; /* Take up remaining space */
+    background-color: #fff; /* Background color */
+    padding: 20px; /* Some padding for the chat area */
+    overflow-y: auto; /* Allow vertical scrolling if content overflows */
+}
+
+/* Chat Window Styles */
+.window-chat {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Make it full height of the parent */
+    width: 100%; /* Full width */
+    border: 1px solid #e0e0e0; /* Border for the chat window */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    background-color: #ffffff; /* White background */
+  }
+  
+  .message {
+    padding: 10px;
+    margin: 5px; /* Space between messages */
+    border-radius: 5px; /* Rounded corners for messages */
+    max-width: 70%; /* Limit message width */
+    position: relative; /* Positioning for sender/receiver styling */
+  }
+  
+  .sender {
+    background-color: #e0f7fa; /* Light blue background for user messages */
+    align-self: flex-end; /* Align user messages to the right */
+  }
+  
+  .receiver {
+    background-color: #f1f1f1; /* Light gray background for admin messages */
+    align-self: flex-start; /* Align admin messages to the left */
+  }
+  
+  .chat-input {
+    display: flex; /* Flex container for input and button */
+    border-top: 1px solid #e0e0e0; /* Top border for input area */
+    padding: 10px; /* Padding around the input area */
+    background-color: #f9f9f9; /* Slightly gray background */
+  }
+  
+  .chat-input input {
+    flex: 1; /* Make the input take available space */
+    padding: 10px; /* Padding inside the input */
+    border: 1px solid #ccc; /* Border for the input */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+  }
+  
+  .chat-input button {
+    margin-left: 10px; /* Space between input and button */
+    padding: 10px 15px; /* Padding for button */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth background color transition */
+  }
+  
+  .chat-input button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  
+  

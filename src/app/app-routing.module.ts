@@ -8,6 +8,7 @@ import { HomeComponent } from './components/home/home/home.component';
 import { AdminDashboardComponent } from './components/dashboard/admin-dashboard/admin-dashboard.component';
 import { ManageSubAdminsComponent } from './components/dashboard/navbar-components/manage-sub-admins/manage-sub-admins.component';
 import { UserChatBoxComponent } from './components/home/user-chat-box/user-chat-box.component';
+import { ChatDashboardComponent } from './components/dashboard/chat-dashboard/chat-dashboard.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -17,7 +18,9 @@ const routes: Routes = [
   { path: 'support-team-admin-dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard],
     children: [
       // Add the new route as a child of AdminDashboardComponent
-      { path: 'manage-sub-admins', component: ManageSubAdminsComponent }
+      { path: 'manage-sub-admins', component: ManageSubAdminsComponent },
+      { path: 'chat', component: ChatDashboardComponent },
+      { path: 'chat/:id', component: ChatDashboardComponent },
     ]
    },
   

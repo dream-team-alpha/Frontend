@@ -1,0 +1,94 @@
+*
+.contact-list {
+  background-color: #f0f2f5; /* Background color for sidebar */
+  overflow-y: auto; /* Enable scrolling if content exceeds height */
+  border-right: 1px solid #ccc; /* Right border for separation */
+  transition: width 0.3s; /* Smooth transition for width change */
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+}
+
+.parent-header {
+  border-bottom: 1px solid #ccc; /* Bottom border for header separation */
+  background-color: #f5f7f9; /* Header background color */
+  padding: 10px; /* Padding for header */
+}
+
+.chat-header {
+  display: flex; /* Flex layout for header elements */
+  justify-content: space-between; /* Space between items */
+  align-items: center; /* Center items vertically */
+}
+
+.sidebar-toggle {
+  margin-left: auto; /* Align toggle button to the right */
+  cursor: pointer; /* Pointer cursor for clickable items */
+}
+
+.avatar {
+  height: 45px; /* Avatar height */
+  width: 45px; /* Avatar width */
+  border-radius: 50%; /* Circular avatar */
+  margin-right: 10px; /* Space to the right */
+}
+
+.user-info {
+  display: flex; /* Flex layout for user info */
+  align-items: center; /* Center items vertically */
+}
+
+.dropdown {
+  position: relative; /* Relative position for dropdown menu */
+}
+
+.dropdown-toggle {
+  background: none; /* Remove default button styles */
+  border: none; /* No border */
+  font-size: 20px; /* Font size for dropdown toggle */
+  cursor: pointer; /* Pointer cursor for clickable items */
+}
+
+.dropdown-menu {
+  background-color: white; /* Dropdown menu background */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Shadow for dropdown */
+  position: absolute; /* Absolute position for dropdown */
+  right: 0; /* Align to the right */
+  padding: 10px; /* Padding inside dropdown */
+  width: 200px; /* Fixed width for dropdown */
+  z-index: 1000; /* Ensure dropdown is on top */
+  display: none; /* Initially hide dropdown */
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block; /* Show dropdown on hover */
+}
+
+.dropdown-item {
+  display: flex; /* Flex layout for dropdown items */
+  align-items: center; /* Center items vertically */
+  padding: 10px 15px; /* Padding for items */
+  cursor: pointer; /* Pointer cursor for clickable items */
+  font-size: 16px; /* Font size for items */
+  color: #333; /* Text color */
+  border-radius: 5px; /* Rounded corners for items */
+  transition: background-color 0.2s ease-in-out; /* Transition effect */
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0; /* Highlight background on hover */
+}
+
+.search-bar {
+  position: relative; /* Relative positioning for search input */
+  width: 100%; /* Full width */
+  margin-top: 10px; /* Margin for spacing */
+}
+
+.search-input {
+  width: 100%; /* Full width for input */
+  padding: 10px; /* Padding for input */
+  border: 1px solid #ccc; /* Border for input */
+  border-radius: 20px; /* Rounded corners for input */
+  box-sizing: border-box; /* Include padding and border in width */
+}

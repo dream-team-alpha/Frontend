@@ -1,0 +1,32 @@
+<div class="profile-container">
+    <div class="profile-header">
+      <img [src]="" alt="Avatar" class="profile-avatar" />
+      <h2>{{ profile.name }}</h2>
+      <button (click)="isEditing = !isEditing" class="edit-button">
+        {{ isEditing ? "Cancel" : "Edit" }}
+      </button>
+    </div>
+    <div class="profile-info" *ngIf="!isEditing">
+      <p><strong>Email:</strong> {{ profile.email }}</p>
+      <p><strong>About:</strong> {{ profile.about }}</p>
+    </div>
+  
+    <div class="profile-edit" *ngIf="isEditing">
+      <div>
+        <label>Name:</label>
+        <input [(ngModel)]="profile.name" />
+      </div>
+      <div>
+        <label>Email:</label>
+        <input [(ngModel)]="profile.email" />
+      </div>
+      <div>
+        <label>About:</label>
+        <textarea [(ngModel)]="profile.about"></textarea>
+      </div>
+      <button (click)="saveProfile()" class="save-button">Save</button>
+    </div>
+  
+    <button (click)="goBack()" class="back-button">Back</button>
+  </div>
+  
