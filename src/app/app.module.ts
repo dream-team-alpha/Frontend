@@ -16,6 +16,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 
 //form
 import { ReactiveFormsModule } from '@angular/forms';
@@ -73,7 +75,8 @@ import { WebSocketService } from './services/web-socket/websocket.service';
     MatCardModule,
     MatDialogModule,
     MatListModule,
-    MatSelectModule
+    MatSelectModule,
+    DragDropModule
   ],
   providers: [WebSocketService],
   bootstrap: [AppComponent]

@@ -197,4 +197,8 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   private updateMessageCache(): void {
     localStorage.setItem('chatMessages', JSON.stringify(this.messages));
   }
+
+  closeChat(){
+    
+  }
 }

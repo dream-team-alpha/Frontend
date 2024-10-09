@@ -1,77 +1,109 @@
-<div class="chat-box" [class.active]="isChatOpen">
-    <div class="chat-header">
-        <div class="avatar">
-            <img src="https://cdn-icons-png.flaticon.com/128/15444/15444770.png" alt="Support Team Avatar" />
+<div class="chat-box" [class.active]="isChatOpen" cdkDrag>
+  <div class="chat-header">
+    <div class="avatar">
+      <img
+        src="https://cdn-icons-png.flaticon.com/128/15444/15444770.png"
+        alt="Support Team Avatar"
+      />
+    </div>
+    <div class="chat-info">
+      <div class="name">Support-Team</div>
+      <div class="online-status">We're online</div>
+    </div>
+    <div class="actions">
+      <button class="toggle-btn" (click)="toggleChat()">⬇️</button>
+    </div>
+    <div class="actions">
+      <button class="toggle-btn" (click)="closeChat()">❎</button>
+    </div>
+  </div>
+  <div class="chat-body">
+    <!-- User detail input form -->
+    <div *ngIf="!isDetailsSubmitted" class="user-details-form">
+      <h3>Enter your details*</h3>
+      <form (ngSubmit)="submitUserDetails()" #userForm="ngForm">
+        <input
+          type="text"
+          placeholder="Enter Name"
+          [(ngModel)]="name"
+          name="name"
+          required
+        />
+        <div
+          *ngIf="
+            userForm.controls['name']?.invalid &&
+            (userForm.controls['name']?.dirty ||
+              userForm.controls['name']?.touched)
+          "
+          class="error"
+        >
+          Name is required.
         </div>
-        <div class="chat-info">
-            <div class="name">Support-Team</div>
-            <div class="online-status">We're online</div>
+
+        <input
+          type="email"
+          placeholder="Enter Email"
+          [(ngModel)]="email"
+          name="email"
+          required
+        />
+        <div
+          *ngIf="
+            userForm.controls['email']?.invalid &&
+            (userForm.controls['email']?.dirty ||
+              userForm.controls['email']?.touched)
+          "
+          class="error"
+        >
+          Valid email is required.
         </div>
-        <div class="actions">
-            <button class="toggle-btn" (click)="toggleChat()">⬇️</button>
+        <div
+          *ngIf="
+            !isValidEmail(email) &&
+            (userForm.controls['email']?.dirty ||
+              userForm.controls['email']?.touched)
+          "
+          class="error"
+        >
+          Email must be a valid Gmail address.
         </div>
+
+        <button type="submit" [disabled]="userForm.invalid">Start Chat</button>
+      </form>
     </div>
 
-    <div class="chat-body">
-        <!-- User detail input form -->
-        <div *ngIf="!isDetailsSubmitted" class="user-details-form">
-            <h3>Enter your details*</h3>
-            <form (ngSubmit)="submitUserDetails()" #userForm="ngForm">
-                <input
-                    type="text"
-                    placeholder="Enter Name"
-                    [(ngModel)]="name"
-                    name="name"
-                    required
-                />
-                <div *ngIf="userForm.controls['name']?.invalid && (userForm.controls['name']?.dirty || userForm.controls['name']?.touched)" class="error">
-                    Name is required.
-                </div>
-
-                <input
-                    type="email"
-                    placeholder="Enter Email"
-                    [(ngModel)]="email"
-                    name="email"
-                    required
-                />
-                <div *ngIf="userForm.controls['email']?.invalid && (userForm.controls['email']?.dirty || userForm.controls['email']?.touched)" class="error">
-                    Valid email is required.
-                </div>
-                <div *ngIf="!isValidEmail(email) && (userForm.controls['email']?.dirty || userForm.controls['email']?.touched)" class="error">
-                    Email must be a valid Gmail address.
-                </div>
-
-                <button type="submit" [disabled]="userForm.invalid">Start Chat</button>
-            </form>
-        </div>
-
-        <!-- Messages display -->
-        <div class="messages">
-            <div *ngFor="let msg of messages">
-                <p [ngClass]="{'sent': msg.senderType === 'user', 'received': msg.senderType === 'admin'}">
-                    <strong>{{ msg.senderType === 'user' ? 'You' : 'Admin' }}:</strong>
-                    {{ msg.content }}
-                    <span class="timestamp">{{ formatDate(msg.createdAt) }}</span>
-                </p>
-            </div>
-        </div>
-
-        <!-- Message input area -->
-        <div *ngIf="isDetailsSubmitted" class="input-area">
-            <input 
-                type="text" 
-                [(ngModel)]="message" 
-                placeholder="Enter your message..." 
-                (keydown.enter)="sendMessage()" 
-            />
-            <button class="send-btn" (click)="sendMessage()">
-                <i class="fa fa-message"></i>
-            </button>
-        </div>
+    <!-- Messages display -->
+    <div class="messages">
+      <div *ngFor="let msg of messages">
+        <p
+          [ngClass]="{
+            sent: msg.senderType === 'user',
+            received: msg.senderType === 'admin'
+          }"
+        >
+          <strong>{{ msg.senderType === "user" ? "You" : "Admin" }}:</strong>
+          {{ msg.content }}
+          <span class="timestamp">{{ formatDate(msg.createdAt) }}</span>
+        </p>
+      </div>
     </div>
+
+    <!-- Message input area -->
+    <div *ngIf="isDetailsSubmitted" class="input-area">
+      <input
+        type="text"
+        [(ngModel)]="message"
+        placeholder="Enter your message..."
+        (keydown.enter)="sendMessage()"
+      />
+      <button class="send-btn" (click)="sendMessage()">
+        <img src="/assets/sendButton.png" alt="">
+      </button>
+    </div>
+  </div>
 </div>
 
 <button class="open-chat-btn" *ngIf="!isChatOpen" (click)="toggleChat()">
-    Chat with us!
+    <img src="/assets/bubble-chat.png" alt="">
+  Contact us!
 </button>
