@@ -1,7 +1,7 @@
 /* General layout */
 .chat-dashboard {
   display: flex;
-  height: 100vh; /* Full viewport height */
+  height: 90vh; /* Full viewport height */
 }
 
 .window-chat {
@@ -9,7 +9,6 @@
   display: flex;
   flex-direction: column;
   background-color: #f9faff; /* Light gray background */
-  padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
 }
 
@@ -25,84 +24,65 @@
   margin-bottom: 15px; /* Space between header and messages */
 }
 
-.chat-header p{
+.chat-header p {
   font-weight: 525;
   font-size: 18px;
-  margin-top: -5px;
-  
-}
-
-
-
-/* Date line */
-.date-line {
-  text-align: center;
-  color: #666;
-  font-size: 12px;
-  margin: 15px 0;
-  position: relative;
-}
-
-.date-line:before,
-.date-line:after {
-  content: '';
-  display: inline-block;
-  width: 30%;
-  border-bottom: 1px solid #ccc;
-  vertical-align: middle;
-}
-
-.date-line:before {
-  margin-right: 10px;
-}
-
-.date-line:after {
-  margin-left: 10px;
+  margin: 0; /* Remove default margin */
 }
 
 /* Messages styling */
 .message-container {
   flex: 1;
-  overflow-y: auto;
-  padding-bottom: 20px; /* Space for bottom messages */
-  margin-bottom: 15px; /* Space above chat input */
+  overflow-y: auto; /* Enable scrolling for messages */
+  padding: 15px; /* General padding for the message container */
+  background-color: #f9faff; /* Match background color */
+  border-radius: 10px; /* Rounded corners for the message container */
 }
 
+/* Message block styling */
 .message {
   display: flex;
-  align-items: flex-end;
-  margin-bottom: 10px;
+  justify-content: flex-start; /* Default to left alignment */
+  margin-bottom: 15px; /* Space between messages */
 }
 
-.message.user .bubble {
-  background-color: rgb(50, 106, 228); /* Light blue for user messages */
-  color: white;
-  margin-left: auto; /* Align user messages to the right */
-  border-radius: 18px 18px 0 18px; /* Rounded corners for user bubbles */
+/* User messages */
+.message.admin {
+  justify-content: flex-end; /* Align user messages to the right */
 }
 
 .message.admin .bubble {
-  background-color: #726565; /* Gray for admin messages */
+  background-color: rgb(50, 106, 228); /* Light blue for user messages */
   color: white;
-  margin-right: auto; /* Align admin messages to the left */
-  border-radius: 18px 18px 18px 0; /* Rounded corners for admin bubbles */
+  border-radius: 18px 18px 0 18px; /* Rounded corners for user bubbles */
+  padding: 10px 15px; /* Add padding for the bubble */
+  max-width: 70%; /* Limit the width of the message */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+  word-wrap: break-word; /* Break long words */
 }
 
-.bubble {
-  padding: 10px 15px;
-  max-width: 60%;
-  word-wrap: break-word; /* Ensure long words wrap */
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Shadow for message bubbles */
-  position: relative; /* Position for potential future use */
+/* Admin messages */
+.message.user {
+  justify-content: flex-start; /* Align admin messages to the left */
+}
+
+.message.user .bubble {
+  background-color: #726565; /* Gray for admin messages */
+  color: white;
+  border-radius: 18px 18px 18px 0; /* Rounded corners for admin bubbles */
+  padding: 10px 15px; /* Add padding for the bubble */
+  max-width: 70%; /* Limit the width of the message */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+  word-wrap: break-word; /* Break long words */
 }
 
 /* Timestamp */
 .timestamp {
-  display: block;
-  font-size: 10px;
-  color: #999;
-  text-align: right;
-  margin-top: 5px; /* Space above timestamp */
+  font-size: 10px; /* Adjust size to match */
+  color: #999; /* Light gray for timestamp */
+  margin-top: 5px; 
+  display: block; /* Ensures timestamp is below message */
+  text-align: right; /* Align timestamp to the right */
 }
 
 /* Chat input */
@@ -130,8 +110,8 @@
 }
 
 .send-button {
-  background-color: #2196f3; /* Blue background */
-  color: white;
+  background-color: #fff; /* Blue background */
+  color: #ffffff; /* White text color */
   padding: 10px 15px;
   border: none;
   border-radius: 50%; /* Circle button */
@@ -141,24 +121,10 @@
 }
 
 .send-button:hover {
-  background-color: #1e88e5; /* Darker blue on hover */
+  background-color:#fff; /* Darker blue on hover */
 }
 
-/* Emoji and Attachments (Optional) */
-.emoji-btn,
-.attachment-btn {
-  background: none;
-  border: none;
-  margin-right: 10px;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.emoji-btn:hover,
-.attachment-btn:hover {
-  color: #2196f3; /* Color change on hover */
-}
-
+/* Avatar and User Name */
 .avatar {
   width: 45px;
   height: 45px;

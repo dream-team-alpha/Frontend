@@ -95,7 +95,7 @@
   }
   
   .user-list-container {
-    height: 570px;          /* Set a fixed height for the user list container */
+    height: 505px;          /* Set a fixed height for the user list container */
     overflow-y: auto;      /* Enable vertical scrolling */
     border: 1px solid #e6e6e6; /* Optional: Add a border for better visibility */
   }

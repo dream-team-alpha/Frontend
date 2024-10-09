@@ -9,6 +9,7 @@
       />
       <p class="user-name">{{ user?.name }}</p>
     </div>
+    
     <div class="message-container" #messageContainer>
       <!-- Message blocks -->
       <div
@@ -25,7 +26,7 @@
         </div>
       </div>
     </div>
-
+    
     <!-- Chat input -->
     <div class="chat-input-container">
       <input
@@ -34,7 +35,7 @@
         placeholder="Type a message"
       />
       <button class="send-button" (click)="sendMessage()">
-        <img src="/assets/send.png" alt="" width="20" height="20" />
+        <img src="/assets/send.png" alt="Send" width="20" height="20" />
       </button>
     </div>
   </div>
