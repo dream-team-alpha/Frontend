@@ -61,7 +61,7 @@ body, .container {
   .table th, 
   .table td {
     padding: 12px;
-    text-align: left;
+    text-align: center;
     vertical-align: middle;
     border-top: 1px solid #dee2e6;
   }
