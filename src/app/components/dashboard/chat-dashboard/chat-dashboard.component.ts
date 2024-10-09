@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { WebSocketService } from 'src/app/services/web-socket/websocket.service';
@@ -11,7 +11,9 @@ import { Subscription } from 'rxjs';
   templateUrl: './chat-dashboard.component.html',
   styleUrls: ['./chat-dashboard.component.css']
 })
-export class ChatDashboardComponent implements OnInit, OnDestroy {
+export class ChatDashboardComponent implements OnInit, OnDestroy, AfterViewChecked {
+  @ViewChild('messageContainer') private messageContainer!: ElementRef;
+
   userId!: string;
   adminId: string = '3';
   messages: Message[] = [];
@@ -48,11 +50,16 @@ export class ChatDashboardComponent implements OnInit, OnDestroy {
           // Check if the message already exists to prevent duplicates
           if (!this.isMessageDuplicate(message)) {
             this.messages.push(message); // Add the message to the list
+            this.scrollToBottom();
           }
         });
         this.isSubscribed = true; // Mark as subscribed
       }
     });
+  }
+
+  ngAfterViewChecked() {
+    this.scrollToBottom(); // Scroll to the bottom after each view check
   }
 
   ngOnDestroy(): void {
@@ -68,6 +75,7 @@ export class ChatDashboardComponent implements OnInit, OnDestroy {
     const adminIdNum = Number(this.adminId);
     this.chatService.getUserMessages(userIdNum, adminIdNum).subscribe((data: Message[]) => {
       this.messages = data; // Store the messages
+      this.scrollToBottom(); // Scroll to bottom after loading messages
     });
   }
 
@@ -104,6 +112,7 @@ export class ChatDashboardComponent implements OnInit, OnDestroy {
             // Only push the message if it was successfully sent and not already added
             if (!this.isMessageDuplicate(message)) {
               this.messages.push(message); // Push the newly sent message into the messages array
+              this.scrollToBottom(); // Scroll to bottom after sending message
             }
             this.newMessageContent = ''; // Clear the input field
           },
@@ -123,5 +132,13 @@ export class ChatDashboardComponent implements OnInit, OnDestroy {
       msg.receiverId === newMessage.receiverId &&
       Math.abs(new Date(msg.createdAt).getTime() - new Date(newMessage.createdAt).getTime()) < 1000 // Check if the messages were sent within 1 second
     );
+  }
+
+  private scrollToBottom(): void {
+    try {
+      this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
+    } catch(err) {
+      console.error('Scroll to bottom failed:', err);
+    }
   }
 }

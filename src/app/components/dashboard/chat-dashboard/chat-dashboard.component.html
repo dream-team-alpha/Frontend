@@ -3,13 +3,13 @@
   <div class="window-chat">
     <div class="chat-header">
       <img
-      src="https://cdn-icons-png.flaticon.com/128/15444/15444770.png"
-      alt="Avatar"
-      class="avatar"
-    />
-      <p class="user-name"> {{ user?.name }}</p>
+        src="https://cdn-icons-png.flaticon.com/128/15444/15444770.png"
+        alt="Avatar"
+        class="avatar"
+      />
+      <p class="user-name">{{ user?.name }}</p>
     </div>
-    <div class="message-container">
+    <div class="message-container" #messageContainer>
       <!-- Message blocks -->
       <div
         *ngFor="let message of messages"
@@ -20,7 +20,7 @@
         <div class="bubble">
           <p>{{ message.content }}</p>
           <span class="timestamp">{{
-            message.createdAt | date: "shortTime"
+            message.createdAt | date: 'shortTime'
           }}</span>
         </div>
       </div>
