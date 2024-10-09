@@ -17,6 +17,7 @@ export class ChatDashboardComponent implements OnInit, OnDestroy {
   newMessageContent: string = '';
   newMessageSubscription: Subscription | undefined;
   private isSubscribed: boolean = false; // Flag to check if the subscription is active
+ user: any;
 
   constructor(
     private route: ActivatedRoute,

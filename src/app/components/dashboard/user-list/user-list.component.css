@@ -1,0 +1,107 @@
+.contact-item {
+    display: flex;
+    align-items: center;
+    padding: 20px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-bottom:1px solid #e6e6e6 ;
+  }
+  
+  
+  .contact-item:hover {
+    background-color: #f0f4ff; /* Light blue background on hover */
+  }
+  
+  .avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+  
+  .contact-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .contact-item div {
+    flex-grow: 1;
+  }
+  
+  .contact-item .contact-time {
+    color: #999;
+    font-size: 12px;
+    white-space: nowrap;
+    margin-left: auto;
+  }
+  
+  .contact-item .contact-status {
+    font-size: 14px;
+    color: #777;
+  }
+  
+  .contact-item .contact-status .muted-icon {
+    color: #999;
+    font-size: 18px;
+    margin-left: 10px;
+  }
+  
+  /* Avatar status indicator */
+  .avatar-container {
+    position: relative;
+  }
+  
+  .avatar-container .status-indicator {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 10px;
+    height: 10px;
+    background-color: #4caf50; /* Online status color */
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+  }
+  
+  .contact-item.unread {
+    font-weight: 700; /* Bold unread message */
+  }
+  
+  .unread .contact-name {
+    color: #000; /* Bold name for unread contacts */
+  }
+  
+  .unread .contact-status {
+    color: #333; /* Slightly darker text for unread contacts */
+  }
+  
+  .contact-item .contact-time {
+    font-size: 12px;
+    color: #999;
+  }
+  
+  /* Scroll bar styling */
+  .contact-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .contact-list::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 12px;
+  }
+  
+  .contact-list::-webkit-scrollbar-thumb:hover {
+    background-color: #bbb;
+  }
+  
+  .user-list-container {
+    height: 570px;          /* Set a fixed height for the user list container */
+    overflow-y: auto;      /* Enable vertical scrolling */
+    border: 1px solid #e6e6e6; /* Optional: Add a border for better visibility */
+  }
+  
+  /* Keep the existing styles for app-user-list */
+  .app-user-list {
+    display: flex;
+    flex-direction: column; /* Ensure items stack vertically */
+  }

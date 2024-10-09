@@ -1,17 +1,36 @@
 <div class="chat-dashboard">
   <app-sidebar></app-sidebar>
   <div class="window-chat">
-    <div *ngIf="messages.length === 0">Loading messages...</div>
-    <div *ngFor="let message of messages" class="message">
-      <div [class.sender]="message.senderType === 'user'" [class.receiver]="message.senderType === 'admin'">
-        <p>{{ message.content }}</p>
-        <span>{{ message.createdAt | date: 'short' }}</span>
+    <div class="message-container">
+      <!-- Date line -->
+      <div class="date-line">October 9, 2024</div>
+
+      <!-- Message blocks -->
+      <div
+        *ngFor="let message of messages"
+        class="message"
+        [class.user]="message.senderType === 'user'"
+        [class.admin]="message.senderType === 'admin'"
+      >
+        <div class="bubble">
+          <p>{{ message.content }}</p>
+          <span class="timestamp">{{
+            message.createdAt | date : "shortTime"
+          }}</span>
+        </div>
       </div>
     </div>
 
-    <div class="chat-input">
-      <input [(ngModel)]="newMessageContent" placeholder="Type a message" />
-      <button (click)="sendMessage()">Send</button>
+    <!-- Chat input -->
+    <div class="chat-input-container">
+      <input
+        class="chat-input"
+        [(ngModel)]="newMessageContent"
+        placeholder="Type a message"
+      />
+      <button class="send-button" (click)="sendMessage()">
+        <img src="/assets/send.png" alt="" width="20" height="20" />
+      </button>
     </div>
   </div>
 </div>

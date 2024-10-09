@@ -1,94 +1,146 @@
-*
 .contact-list {
-  background-color: #f0f2f5; /* Background color for sidebar */
-  overflow-y: auto; /* Enable scrolling if content exceeds height */
-  border-right: 1px solid #ccc; /* Right border for separation */
-  transition: width 0.3s; /* Smooth transition for width change */
+  width: 400px;
+  background-color: #ffffff;
+  border-right: 1px solid #e6e6e6;
   display: flex;
-  flex-direction: column; /* Stack children vertically */
+  flex-direction: column;
+  
 }
 
 .parent-header {
-  border-bottom: 1px solid #ccc; /* Bottom border for header separation */
-  background-color: #f5f7f9; /* Header background color */
-  padding: 10px; /* Padding for header */
+  padding: 20px;
+  background-color: #f5f5f5;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .chat-header {
-  display: flex; /* Flex layout for header elements */
-  justify-content: space-between; /* Space between items */
-  align-items: center; /* Center items vertically */
-}
-
-.sidebar-toggle {
-  margin-left: auto; /* Align toggle button to the right */
-  cursor: pointer; /* Pointer cursor for clickable items */
-}
-
-.avatar {
-  height: 45px; /* Avatar height */
-  width: 45px; /* Avatar width */
-  border-radius: 50%; /* Circular avatar */
-  margin-right: 10px; /* Space to the right */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .user-info {
-  display: flex; /* Flex layout for user info */
-  align-items: center; /* Center items vertically */
+  display: flex;
+  align-items: center;
+}
+
+.user-info img.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-info span {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.sidebar-toggle {
+  display: flex;
+  align-items: center;
+  margin-top: -8px;
+}
+
+.mat-icon {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.mat-icon:hover {
+  background-color: #eeeeee;
+  border-radius: 50%;
 }
 
 .dropdown {
-  position: relative; /* Relative position for dropdown menu */
+  position: relative;
+  display: inline-block;
 }
 
 .dropdown-toggle {
-  background: none; /* Remove default button styles */
-  border: none; /* No border */
-  font-size: 20px; /* Font size for dropdown toggle */
-  cursor: pointer; /* Pointer cursor for clickable items */
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
 }
 
 .dropdown-menu {
-  background-color: white; /* Dropdown menu background */
-  border-radius: 10px; /* Rounded corners */
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Shadow for dropdown */
-  position: absolute; /* Absolute position for dropdown */
-  right: 0; /* Align to the right */
-  padding: 10px; /* Padding inside dropdown */
-  width: 200px; /* Fixed width for dropdown */
-  z-index: 1000; /* Ensure dropdown is on top */
-  display: none; /* Initially hide dropdown */
+  display: none;
+  position: absolute;
+  background-color: #ffffff;
+  min-width: 160px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1;
 }
 
 .dropdown:hover .dropdown-menu {
-  display: block; /* Show dropdown on hover */
+  display: block;
 }
 
 .dropdown-item {
-  display: flex; /* Flex layout for dropdown items */
-  align-items: center; /* Center items vertically */
-  padding: 10px 15px; /* Padding for items */
-  cursor: pointer; /* Pointer cursor for clickable items */
-  font-size: 16px; /* Font size for items */
-  color: #333; /* Text color */
-  border-radius: 5px; /* Rounded corners for items */
-  transition: background-color 0.2s ease-in-out; /* Transition effect */
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  cursor: pointer;
 }
 
 .dropdown-item:hover {
-  background-color: #f0f0f0; /* Highlight background on hover */
+  background-color: #eeeeee;
+}
+
+.dropdown-item .icon {
+  margin-right: 10px;
+}
+
+.dropdown-item .icon i {
+  font-size: 16px;
+}
+
+.dropdown-item .text {
+  font-size: 14px;
+  color: #333;
 }
 
 .search-bar {
-  position: relative; /* Relative positioning for search input */
-  width: 100%; /* Full width */
-  margin-top: 10px; /* Margin for spacing */
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
 }
 
 .search-input {
-  width: 100%; /* Full width for input */
-  padding: 10px; /* Padding for input */
-  border: 1px solid #ccc; /* Border for input */
-  border-radius: 20px; /* Rounded corners for input */
-  box-sizing: border-box; /* Include padding and border in width */
+  width: 100%;
+  padding: 10px;
+  border-radius: 24px;
+  border: 1px solid #e6e6e6;
+  background-color: #f5f5f5;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.app-user-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.app-user-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.app-user-list::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 12px;
+}
+
+.app-user-list::-webkit-scrollbar-thumb:hover {
+  background-color: #bbb;
 }
