@@ -1,32 +1,105 @@
-<div class="profile-container">
-    <div class="profile-header">
-      <img [src]="" alt="Avatar" class="profile-avatar" />
-      <h2>{{ profile.name }}</h2>
-      <button (click)="isEditing = !isEditing" class="edit-button">
-        {{ isEditing ? "Cancel" : "Edit" }}
-      </button>
+<div class="container">
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
     </div>
-    <div class="profile-info" *ngIf="!isEditing">
-      <p><strong>Email:</strong> {{ profile.email }}</p>
-      <p><strong>About:</strong> {{ profile.about }}</p>
+    <div *ngIf="isLoading">Loading...</div>
+    <div class="form-names">
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input
+          id="firstName"
+          formControlName="firstName"
+          class="form-control"
+        />
+        <div
+          *ngIf="
+            profileForm.get('firstName')?.invalid &&
+            profileForm.get('firstName')?.touched
+          "
+          class="text-danger"
+        >
+          First Name is required.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input id="lastName" formControlName="lastName" class="form-control" />
+        <div
+          *ngIf="
+            profileForm.get('lastName')?.invalid &&
+            profileForm.get('lastName')?.touched
+          "
+          class="text-danger"
+        >
+          Last Name is required.
+        </div>
+      </div>
     </div>
-  
-    <div class="profile-edit" *ngIf="isEditing">
-      <div>
-        <label>Name:</label>
-        <input [(ngModel)]="profile.name" />
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input id="username" formControlName="username" class="form-control" />
+      <div
+        *ngIf="
+          profileForm.get('username')?.invalid &&
+          profileForm.get('username')?.touched
+        "
+        class="text-danger"
+      >
+        Username is required.
       </div>
-      <div>
-        <label>Email:</label>
-        <input [(ngModel)]="profile.email" />
-      </div>
-      <div>
-        <label>About:</label>
-        <textarea [(ngModel)]="profile.about"></textarea>
-      </div>
-      <button (click)="saveProfile()" class="save-button">Save</button>
     </div>
-  
-    <button (click)="goBack()" class="back-button">Back</button>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        class="form-control"
+      />
+      <div
+        *ngIf="
+          profileForm.get('email')?.invalid && profileForm.get('email')?.touched
+        "
+        class="text-danger"
+      >
+        <ng-container *ngIf="profileForm.get('email')?.errors?.['required']"
+          >Email is required.</ng-container
+        >
+        <ng-container *ngIf="profileForm.get('email')?.errors?.['email']"
+          >Invalid email format.</ng-container
+        >
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="avatar">Avatar (optional)</label>
+      <input
+        id="avatar"
+        type="file"
+        (change)="onFileChange($event)"
+        class="form-control"
+      />
+    </div>
+
+    <button type="button" class="btn btn-primary" (click)="openModal()">
+      Update Profile
+    </button>
+  </form>
+
+  <!-- Modal -->
+  <div id="confirmationModal" class="modal" [ngClass]="{ show: isModalOpen }">
+    <div class="modal-content">
+      <h3>Confirmation</h3>
+      <p>Are you sure you want to update your profile?</p>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="confirmUpdate()">
+          Confirm
+        </button>
+      </div>
+    </div>
   </div>
-  
+</div>

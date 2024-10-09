@@ -9,6 +9,7 @@ import { AdminDashboardComponent } from './components/dashboard/admin-dashboard/
 import { ManageSubAdminsComponent } from './components/dashboard/navbar-components/manage-sub-admins/manage-sub-admins.component';
 import { UserChatBoxComponent } from './components/home/user-chat-box/user-chat-box.component';
 import { ChatDashboardComponent } from './components/dashboard/chat-dashboard/chat-dashboard.component';
+import { ProfileComponent } from './components/dashboard/profile/profile.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -21,6 +22,7 @@ const routes: Routes = [
       { path: 'manage-sub-admins', component: ManageSubAdminsComponent },
       { path: 'chat', component: ChatDashboardComponent },
       { path: 'chat/:id', component: ChatDashboardComponent },
+      { path: 'manage-profile', component: ProfileComponent },
     ]
    },
   
