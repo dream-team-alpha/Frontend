@@ -1,7 +1,7 @@
 /* General layout */
 .chat-dashboard {
   display: flex;
-  height: 100vh;
+  height: 100vh; /* Full viewport height */
 }
 
 .window-chat {
@@ -10,7 +10,29 @@
   flex-direction: column;
   background-color: #f9faff; /* Light gray background */
   padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
 }
+
+/* Chat Header */
+.chat-header {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  background-color: #ffffff; /* White background for header */
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow under header */
+  border-radius: 10px;
+  margin-bottom: 15px; /* Space between header and messages */
+}
+
+.chat-header p{
+  font-weight: 525;
+  font-size: 18px;
+  margin-top: -5px;
+  
+}
+
+
 
 /* Date line */
 .date-line {
@@ -42,7 +64,8 @@
 .message-container {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 20px;
+  padding-bottom: 20px; /* Space for bottom messages */
+  margin-bottom: 15px; /* Space above chat input */
 }
 
 .message {
@@ -53,24 +76,24 @@
 
 .message.user .bubble {
   background-color: rgb(50, 106, 228); /* Light blue for user messages */
-  color:white;
-  margin-left: auto;
-  border-radius: 18px 18px 0 18px;
+  color: white;
+  margin-left: auto; /* Align user messages to the right */
+  border-radius: 18px 18px 0 18px; /* Rounded corners for user bubbles */
 }
 
 .message.admin .bubble {
   background-color: #726565; /* Gray for admin messages */
-  color:white;
-  margin-right: auto;
-  border-radius: 18px 18px 18px 0;
+  color: white;
+  margin-right: auto; /* Align admin messages to the left */
+  border-radius: 18px 18px 18px 0; /* Rounded corners for admin bubbles */
 }
 
 .bubble {
   padding: 10px 15px;
   max-width: 60%;
-  word-wrap: break-word;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  position: relative;
+  word-wrap: break-word; /* Ensure long words wrap */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Shadow for message bubbles */
+  position: relative; /* Position for potential future use */
 }
 
 /* Timestamp */
@@ -79,64 +102,49 @@
   font-size: 10px;
   color: #999;
   text-align: right;
-  margin-top: 5px;
+  margin-top: 5px; /* Space above timestamp */
 }
 
 /* Chat input */
 .chat-input-container {
   display: flex;
   align-items: center;
-  background-color: white;
+  background-color: white; /* White background for input area */
   padding: 10px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #ddd; /* Separator line above input */
+  border-radius: 10px; /* Rounded corners */
 }
 
 .chat-input {
-  flex: 1;
+  flex: 1; /* Allow input to take available space */
   border: none;
   padding: 10px;
-  border-radius: 25px;
+  border-radius: 25px; /* Rounded input */
   font-size: 14px;
-  background-color: #f1f1f1;
+  background-color: #f1f1f1; /* Light gray for input */
 }
 
 .chat-input:focus {
-  outline: none;
+  outline: none; /* Remove outline on focus */
+  background-color: #e6e6e6; /* Darker gray on focus */
 }
 
 .send-button {
-  
+  background-color: #2196f3; /* Blue background */
   color: white;
   padding: 10px 15px;
   border: none;
-  border-radius: 50%;
+  border-radius: 50%; /* Circle button */
   margin-left: 10px;
   cursor: pointer;
+  transition: background-color 0.3s; /* Transition for hover effect */
 }
 
 .send-button:hover {
-  background-color: #e4e9ee;
+  background-color: #1e88e5; /* Darker blue on hover */
 }
 
-/* Emoji and Attachments */
-.chat-input-container {
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-}
-
-.chat-input {
-  flex-grow: 1;
-  border: none;
-  border-radius: 20px;
-  padding: 10px;
-  margin-right: 10px;
-}
-
-.chat-input:focus {
-  outline: none;
-}
-
+/* Emoji and Attachments (Optional) */
 .emoji-btn,
 .attachment-btn {
   background: none;
@@ -148,5 +156,18 @@
 
 .emoji-btn:hover,
 .attachment-btn:hover {
-  color: #2196f3;
+  color: #2196f3; /* Color change on hover */
+}
+
+.avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
 }

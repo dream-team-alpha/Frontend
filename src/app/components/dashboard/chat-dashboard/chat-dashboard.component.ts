@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { WebSocketService } from 'src/app/services/web-socket/websocket.service';
+import { UserService, User } from 'src/app/services/user/user.service'; // Import UserService
 import { Message } from 'src/app/components/home/user-chat-box/user-chat-box.component'; // Adjust this path based on your project structure
 import { Subscription } from 'rxjs';
 
@@ -17,20 +18,26 @@ export class ChatDashboardComponent implements OnInit, OnDestroy {
   newMessageContent: string = '';
   newMessageSubscription: Subscription | undefined;
   private isSubscribed: boolean = false; // Flag to check if the subscription is active
- user: any;
+  users: User[] = []; // Store the users array
+  user: User | undefined; // Store the current user object
 
   constructor(
     private route: ActivatedRoute,
     private chatService: ChatService,
-    private webSocketService: WebSocketService
+    private webSocketService: WebSocketService,
+    private userService: UserService // Inject UserService
   ) {}
 
   ngOnInit(): void {
+    // Load all users when the component initializes
+    this.loadUsers();
+
     // Subscribe to route parameters
     this.route.paramMap.subscribe(params => {
       this.userId = params.get('id')!;
       this.loadMessages();
-      
+      this.setCurrentUser(); // Set current user based on userId
+     
       // Connect to WebSocket
       this.webSocketService.connect();
 
@@ -38,9 +45,9 @@ export class ChatDashboardComponent implements OnInit, OnDestroy {
       if (!this.isSubscribed) {
         this.newMessageSubscription = this.webSocketService.receiveNewMessage().subscribe((message: Message) => {
           console.log("Received message:", message); // Log received message
-            // Check if the message already exists to prevent duplicates
-            if (!this.isMessageDuplicate(message)) {
-              this.messages.push(message); // Add the message to the list
+          // Check if the message already exists to prevent duplicates
+          if (!this.isMessageDuplicate(message)) {
+            this.messages.push(message); // Add the message to the list
           }
         });
         this.isSubscribed = true; // Mark as subscribed
@@ -62,6 +69,17 @@ export class ChatDashboardComponent implements OnInit, OnDestroy {
     this.chatService.getUserMessages(userIdNum, adminIdNum).subscribe((data: Message[]) => {
       this.messages = data; // Store the messages
     });
+  }
+
+  loadUsers(): void {
+    this.userService.getUsers().subscribe((data: User[]) => {
+      this.users = data; // Store the users
+    });
+  }
+
+  setCurrentUser(): void {
+    const userIdNum = Number(this.userId); // Convert userId to number
+    this.user = this.users.find(user => user.id === userIdNum); // Find the current user from the users array
   }
 
   sendMessage(): void {
@@ -96,7 +114,6 @@ export class ChatDashboardComponent implements OnInit, OnDestroy {
       }
     }
   }
-  
 
   private isMessageDuplicate(newMessage: Message): boolean {
     // Check if the message already exists in the messages array
