@@ -10,6 +10,8 @@ import { SubAdminService } from 'src/app/services/sub-admin/sub-admin.service';
 export class ManageSubAdminsComponent implements OnInit {
   subAdmins: any[] = [];
   subAdminForm: FormGroup;
+  filteredSubAdmins: any[] = [];
+  searchTerm: string = '';
   selectedAvatar: string | ArrayBuffer | null = null; // Variable to hold the avatar preview
   isEditMode: boolean = false;
   selectedSubAdmin: any;
@@ -51,8 +53,19 @@ export class ManageSubAdminsComponent implements OnInit {
           avatar: `http://localhost:5000/${subAdmin.avatar}`
         };
       });
+      this.filteredSubAdmins = [...this.subAdmins];
       this.calculatePagination();
     });
+  }
+
+  filterSubAdmins(): void {
+    const searchTermLower = this.searchTerm.toLowerCase();
+    this.filteredSubAdmins = this.subAdmins.filter(subAdmin => {
+      const fullName = `${subAdmin.firstName} ${subAdmin.lastName}`.toLowerCase();
+      const email = subAdmin.email.toLowerCase();
+      return fullName.includes(searchTermLower) || email.includes(searchTermLower);
+    });
+    this.calculatePagination(); // Recalculate pagination after filtering
   }
 
   calculatePagination(): void {
@@ -70,6 +83,7 @@ export class ManageSubAdminsComponent implements OnInit {
   }
 
   openAddSubAdminModal(): void {
+    console.log('Opening Add Sub-Admin Modal');
     this.isEditMode = false;
     this.subAdminForm.reset();
     this.isModalOpen = true; 

@@ -1,0 +1,102 @@
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1050;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal.is-active {
+    display: flex;
+  }
+  
+  .modal-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+    position: relative;
+    background-color: #fff;
+    border-radius: 0.3rem;
+    padding: 1.5rem;
+    max-width: 600px;
+    width: 100%;
+    z-index: 2;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+  
+  .modal-content .box {
+    padding: 1.5rem;
+  }
+  
+  .modal-content .box h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  
+  .modal-content .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+  }
+  
+  .modal-content .modal-footer .btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .modal-content .modal-footer .btn:first-child {
+    margin-right: 0.5rem;
+  }
+  
+  .modal-content .modal-footer .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+  }
+  
+  .modal-content .modal-footer .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  .modal-content .modal-footer .btn {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ccc;
+  }
+  
+  .modal-content .modal-footer .btn:hover {
+    background-color: #e2e6ea;
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #000;
+    z-index: 2;
+  }
+  
+  .modal-close:hover {
+    color: #007bff;
+  }
+  
