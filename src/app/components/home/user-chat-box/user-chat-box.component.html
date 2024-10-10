@@ -1,4 +1,4 @@
-<div class="chat-box" [class.active]="isChatOpen" cdkDrag>
+<div class="chat-box" [class.active]="isChatOpen" cdkDrag cdkDragBoundary=".chat-container">
   <div class="chat-header">
     <div class="avatar">
       <img
@@ -13,10 +13,11 @@
     <div class="actions">
       <button class="toggle-btn" (click)="toggleChat()">⬇️</button>
     </div>
-    <div class="actions">
+    <div class="actions" *ngIf="!isChatClosed">
       <button class="toggle-btn" (click)="closeChat()">❎</button>
     </div>
   </div>
+
   <div class="chat-body">
     <!-- User detail input form -->
     <div *ngIf="!isDetailsSubmitted" class="user-details-form">
@@ -88,8 +89,8 @@
       </div>
     </div>
 
-    <!-- Message input area -->
-    <div *ngIf="isDetailsSubmitted" class="input-area">
+        <!-- Message input area, only shown if chat is not closed -->
+    <div *ngIf="isDetailsSubmitted && !isChatClosed" class="input-area">
       <input
         type="text"
         [(ngModel)]="message"
@@ -97,10 +98,26 @@
         (keydown.enter)="sendMessage()"
       />
       <button class="send-btn" (click)="sendMessage()">
-        <img src="/assets/sendButton.png" alt="">
+        <img src="/assets/sendButton.png" alt="Send">
       </button>
     </div>
+
+    <div *ngIf="isChatClosed" class="chat-closed-message">
+      <p>Thank you for chosing our service. Hope your queries have been resolved. The chat is closed from further messaging.</p>
+      <span>To start a new chat <a (click)="resetChat()">Click Here</a></span>
+    </div>    
   </div>
+
+  <div *ngIf="isCloseModalOpen" class="modal-overlay">
+    <div class="modal-content">
+      <p>Are you sure you want to close the chat?</p>
+      <div class="modal-footer">
+        <button class="cancel-btn" (click)="cancelCloseChat()">Cancel</button>
+        <button class="confirm-btn" (click)="confirmCloseChat()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <button class="open-chat-btn" *ngIf="!isChatOpen" (click)="toggleChat()">

@@ -37,6 +37,8 @@ export class WebSocketService {
 
   // Method to disconnect from the WebSocket server
   disconnect(): void {
-    this.socket.disconnect();
+    if (this.socket) {
+      this.socket.disconnect();
+    }
   }
 }
