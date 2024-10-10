@@ -8,9 +8,10 @@
 }
 
 .navbar-container {
-    display: flex; /* Flex layout */
-    justify-content: space-between; /* Space between brand and toggle */
-    align-items: center; /* Center vertically */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .navbar-brand {

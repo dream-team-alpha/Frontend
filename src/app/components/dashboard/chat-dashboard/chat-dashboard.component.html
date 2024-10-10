@@ -62,6 +62,7 @@
         class="chat-input"
         [(ngModel)]="newMessageContent"
         placeholder="Type a message"
+        (keydown.enter)="sendMessage()"
       />
       <button class="send-button" (click)="sendMessage()">
         <img src="/assets/send.png" alt="Send" width="23" height="23" />

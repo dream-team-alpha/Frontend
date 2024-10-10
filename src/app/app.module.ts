@@ -10,7 +10,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 //angular material imports
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,6 +17,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 //form
@@ -40,6 +40,8 @@ import { SidebarComponent } from './components/dashboard/sidebar/sidebar.compone
 import { UserListComponent } from './components/dashboard/user-list/user-list.component';
 import { ChatDashboardComponent } from './components/dashboard/chat-dashboard/chat-dashboard.component';
 import { WebSocketService } from './services/web-socket/websocket.service';
+import { AnalyticDashboardComponent } from './components/dashboard/navbar-components/analytic-dashboard/analytic-dashboard.component';
+import { ManageUsersComponent } from './components/dashboard/navbar-components/manage-users/manage-users.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +61,8 @@ import { WebSocketService } from './services/web-socket/websocket.service';
     SidebarComponent,
     UserListComponent,
     ChatDashboardComponent,
+    AnalyticDashboardComponent,
+    ManageUsersComponent,
   ],
   imports: [
     BrowserModule,
@@ -78,7 +82,7 @@ import { WebSocketService } from './services/web-socket/websocket.service';
     MatListModule,
     MatSelectModule,
     DragDropModule,
-    MatMenuModule,
+    MatMenuModule
   ],
   providers: [WebSocketService],
   bootstrap: [AppComponent]
