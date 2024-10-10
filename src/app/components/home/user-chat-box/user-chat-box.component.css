@@ -156,6 +156,18 @@
                 /* Slightly rounded corners */
             }
         }
+        
+        img:hover {
+            transform: scale(1.1);
+        }
+
+        hr {
+            margin: 0;
+            margin-bottom: 14px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        
 
         .messages {
             flex-grow: 1;
@@ -240,17 +252,41 @@
     }
 }
 
+.welcome-message{
+    font-size: 14px;
+    text-align: center;
+    font-weight: 500;
+    color: #2c3e50;
+}
+.logo {
+    height: 60px;
+    width: 60px; 
+    border: none;
+    display: block;
+    margin:auto;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);             
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);           
+    transition: transform 0.3s ease;
+    margin-bottom: 4px;
+    border-radius: 10px;
+
+}
+
+.logo-message-container{
+            overflow-y: auto;
+}
+
 /* Open chat button styling */
 .open-chat-btn {
     position: fixed;
     bottom: 20px;
     right: 20px;
     color: #3498db;
-    background-color: #fff;
+    background-color: #ffffff;
     border: none;
     padding: 12px 20px;
     cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
     transition: background 0.3s ease, transform 0.3s ease;
     font-family: 'Inter', sans-serif;
     font-size: 18px;
@@ -274,51 +310,58 @@
     left: 0;
     width: 100%;
     height: 100%;
-    border-radius: 12px;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    backdrop-filter: blur(5px); 
+    border-radius: 12px;
 }
 
 .modal-content {
     background-color: #fff;
-    padding: 30px;
-    border-radius: 14px;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
-    width: 280px;
-    animation: fadeIn 0.3s ease;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
+    width: 320px;
+    animation: fadeIn 0.4s ease-in-out;
     text-align: center;
     font-family: 'Inter', sans-serif;
+    position: relative;
 }
 
-.modal-content p{
-    color: red;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 20px;
+.modal-content p {
+    color: #333;
+    font-size: 20px; 
+    font-weight: 700;
+    margin-bottom: 30px;
+    letter-spacing: 0.5px; 
 }
 
 .modal-body {
-    font-size: 14px;
-    margin-bottom: 20px;
+    font-size: 16px;
+    margin-bottom: 25px;
+    color: #666; 
 }
 
 .modal-footer {
     display: flex;
-    justify-content: space-around;
-    gap: 10px;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 15px; 
 }
 
 .modal-footer button {
-    padding: 10px 20px;
+    padding: 12px 25px; 
     border: none;
-    border-radius: 25px;
+    border-radius: 30px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px; 
     font-weight: 600;
-    transition: background-color 0.2s;
+    transition: background-color 0.3s, box-shadow 0.2s; 
+    outline: none; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .modal-footer .confirm-btn {
@@ -333,11 +376,14 @@
 
 .modal-footer .confirm-btn:hover {
     background-color: #c0392b;
+    box-shadow: 0 6px 12px rgba(230, 57, 70, 0.3); 
 }
 
 .modal-footer .cancel-btn:hover {
     background-color: #2980b9;
+    box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
 }
+
 
 .chat-closed-message {
     background-color: #f8f9fa;

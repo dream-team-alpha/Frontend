@@ -1,5 +1,5 @@
-<div class="chat-box" [class.active]="isChatOpen" cdkDrag cdkDragBoundary=".chat-container">
-  <div class="chat-header">
+<div class="chat-box" [class.active]="isChatOpen" cdkDrag>
+  <div class="chat-header" cdkDragHandle>
     <div class="avatar">
       <img
         src="https://cdn-icons-png.flaticon.com/128/15444/15444770.png"
@@ -21,6 +21,13 @@
   <div class="chat-body">
     <!-- User detail input form -->
     <div *ngIf="!isDetailsSubmitted" class="user-details-form">
+      <img
+        class="logo"
+        src="https://keabuilder.com/images/kblogo.png"
+        alt="Logo"
+      />
+      <p class="welcome-message">Welcome to KEA-Builder Support</p>
+      <hr />
       <h3>Enter your details*</h3>
       <form (ngSubmit)="submitUserDetails()" #userForm="ngForm">
         <input
@@ -82,14 +89,14 @@
             received: msg.senderType === 'admin'
           }"
         >
-          <strong>{{ msg.senderType === "user" ? "You" : "Admin" }}:</strong>
+          <strong>{{ msg.senderType === "user" ? "You" : "Support" }} : </strong>
           {{ msg.content }}
           <span class="timestamp">{{ formatDate(msg.createdAt) }}</span>
         </p>
       </div>
     </div>
 
-        <!-- Message input area, only shown if chat is not closed -->
+    <!-- Message input area, only shown if chat is not closed -->
     <div *ngIf="isDetailsSubmitted && !isChatClosed" class="input-area">
       <input
         type="text"
@@ -98,14 +105,17 @@
         (keydown.enter)="sendMessage()"
       />
       <button class="send-btn" (click)="sendMessage()">
-        <img src="/assets/sendButton.png" alt="Send">
+        <img src="/assets/sendButton.png" alt="Send" />
       </button>
     </div>
 
     <div *ngIf="isChatClosed" class="chat-closed-message">
-      <p>Thank you for chosing our service. Hope your queries have been resolved. The chat is closed from further messaging.</p>
+      <p>
+        Thank you for chosing our service. Hope your queries have been resolved.
+        The chat is closed from further messaging.
+      </p>
       <span>To start a new chat <a (click)="resetChat()">Click Here</a></span>
-    </div>    
+    </div>
   </div>
 
   <div *ngIf="isCloseModalOpen" class="modal-overlay">
@@ -113,14 +123,15 @@
       <p>Are you sure you want to close the chat?</p>
       <div class="modal-footer">
         <button class="cancel-btn" (click)="cancelCloseChat()">Cancel</button>
-        <button class="confirm-btn" (click)="confirmCloseChat()">Confirm</button>
+        <button class="confirm-btn" (click)="confirmCloseChat()">
+          Confirm
+        </button>
       </div>
     </div>
   </div>
-
 </div>
 
 <button class="open-chat-btn" *ngIf="!isChatOpen" (click)="toggleChat()">
-    <img src="/assets/bubble-chat.png" alt="">
+  <img src="/assets/bubble-chat.png" alt="" />
   Contact us!
 </button>
