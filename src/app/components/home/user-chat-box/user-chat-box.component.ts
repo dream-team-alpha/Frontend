@@ -44,6 +44,7 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
     this.loadMessages();
     this.loadChatClosedState();
 
+    // Ensure we don't connect to WebSocket if the chat is closed
     if (this.isDetailsSubmitted && !this.isChatClosed) {
       this.webSocketService.connect();
       this.subscribeToNewMessages();
@@ -54,7 +55,8 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
     if (this.newMessageSubscription) {
       this.newMessageSubscription.unsubscribe();
     }
-    if (this.isChatClosed) {
+    // Always disconnect if the chat is closed to prevent lingering connections
+    if (!this.isChatClosed) {
       this.webSocketService.disconnect();
     }
   }
@@ -86,11 +88,13 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       (response: any) => {
         this.userId = response.id;
         this.isDetailsSubmitted = true;
-
         this.saveUserDetails();
 
-        this.webSocketService.connect();
-        this.subscribeToNewMessages();
+        // Only connect if the chat is not closed
+        if (!this.isChatClosed) {
+          this.webSocketService.connect();
+          this.subscribeToNewMessages();
+        }
       },
       (error) => {
         console.error('Error creating user:', error);
@@ -111,7 +115,7 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   }
 
   sendMessage(): void {
-    if (this.message.trim() === '') return;
+    if (this.message.trim() === '' || this.isChatClosed) return;
 
     const messageData: Message = {
       senderId: this.userId,
@@ -158,8 +162,10 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       this.email = userDetails.email;
       this.isDetailsSubmitted = true;
 
-      this.webSocketService.connect();
-      this.subscribeToNewMessages();
+      if (!this.isChatClosed) {
+        this.webSocketService.connect();
+        this.subscribeToNewMessages();
+      }
     }
   }
 
@@ -184,10 +190,8 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   }
 
   private loadChatClosedState(): void {
-    const closedState = JSON.parse(
-      localStorage.getItem('isChatClosed') || 'false'
-    );
-    this.isChatClosed = closedState;
+    const closedState = localStorage.getItem('isChatClosed');
+    this.isChatClosed = closedState === 'true';
   }
 
   private updateMessageCache(): void {
@@ -202,7 +206,7 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
     const closeChatMessage: Message = {
       senderId: this.userId,
       receiverId: this.adminId.toString(),
-      content: 'The chat Has been closed successfully',
+      content: 'The chat has been closed successfully',
       senderType: 'user',
       receiverType: 'admin',
       createdAt: new Date().toISOString(),
@@ -212,13 +216,18 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       (response) => {
         console.log('Message saved to backend:', response);
         this.webSocketService.sendMessage(closeChatMessage);
+
         this.messages.push(closeChatMessage);
         this.updateMessageCache();
         this.scrollToBottom();
         this.isChatClosed = true;
-        this.isCloseModalOpen = false;
         this.saveChatClosedState();
-        this.webSocketService.disconnect();
+        this.isCloseModalOpen = false;
+
+        // Allow some time for WebSocket to finish sending the closing message
+        setTimeout(() => {
+          this.webSocketService.disconnect();
+        }, 100);
       },
       (error) => {
         console.error('Error sending message to backend:', error);
