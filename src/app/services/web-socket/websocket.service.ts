@@ -7,36 +7,48 @@ import { io, Socket } from 'socket.io-client';
 })
 export class WebSocketService {
   private socket!: Socket;
-
-  // Create a Subject to handle incoming messages
   private messageSubject = new Subject<any>();
   public message$ = this.messageSubject.asObservable();
+  private isChatClosed = false;
 
   constructor() {
-    // Initialize the socket connection with the server URL
     this.socket = io('http://localhost:5000'); // Update with your server URL
   }
 
-  // Method to connect to the WebSocket server
   connect(): void {
-    this.socket.connect(); // Connect to the socket
+    this.isChatClosed = localStorage.getItem('isChatClosed') === 'true';
+
+    if (this.isChatClosed) {
+      console.log('Chat is closed. WebSocket connection not allowed.');
+      this.socket.disconnect();
+      return;
+    }
+
+    this.socket.connect();
   }
 
-  // Method to send messages
   sendMessage(message: any): void {
-    this.socket.emit('sendMessage', message); // Emit the message
+    if (!this.isChatClosed) {
+      this.socket.emit('sendMessage', message);
+    } else {
+      console.log('Cannot send message, chat is closed.');
+    }
   }
 
-  // Subscribe to incoming messages
   receiveNewMessage() {
     this.socket.on('receiveMessage', (message) => {
-      this.messageSubject.next(message); // Notify subscribers with the new message
+      this.messageSubject.next(message);
     });
-    return this.message$; // Return the observable
+    return this.message$;
   }
 
-  // Method to disconnect from the WebSocket server
   disconnect(): void {
-    this.socket.disconnect();
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+  }
+
+  setChatClosed(state: boolean): void {
+    this.isChatClosed = state;
   }
 }
