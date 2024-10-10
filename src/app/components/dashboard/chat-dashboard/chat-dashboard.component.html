@@ -8,8 +8,37 @@
         class="avatar"
       />
       <p class="user-name">{{ user?.name }}</p>
+      
+      <button class="chat-dropdown" mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    
+      
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+          <mat-icon>account_circle</mat-icon>
+          <span>Contact info</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>check_circle_outline</mat-icon>
+          <span>Select messages</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>notifications_off</mat-icon>
+          <span>Mute notifications</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>clear</mat-icon>
+          <span>Clear messages</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>delete</mat-icon>
+          <span>Delete chat</span>
+        </button>
+      </mat-menu>
     </div>
     
+
     <div class="message-container" #messageContainer>
       <!-- Message blocks -->
       <div
@@ -20,10 +49,10 @@
       >
         <div class="bubble">
           <p>{{ message.content }}</p>
-          <span class="timestamp">{{
-            message.createdAt | date: 'shortTime'
-          }}</span>
         </div>
+        <span class="timestamp">
+          {{ message.createdAt | date: 'shortTime' }}
+        </span>
       </div>
     </div>
     
@@ -35,7 +64,7 @@
         placeholder="Type a message"
       />
       <button class="send-button" (click)="sendMessage()">
-        <img src="/assets/send.png" alt="Send" width="20" height="20" />
+        <img src="/assets/send.png" alt="Send" width="23" height="23" />
       </button>
     </div>
   </div>

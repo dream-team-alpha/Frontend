@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 //angular material imports
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -76,7 +77,8 @@ import { WebSocketService } from './services/web-socket/websocket.service';
     MatDialogModule,
     MatListModule,
     MatSelectModule,
-    DragDropModule
+    DragDropModule,
+    MatMenuModule,
   ],
   providers: [WebSocketService],
   bootstrap: [AppComponent]
