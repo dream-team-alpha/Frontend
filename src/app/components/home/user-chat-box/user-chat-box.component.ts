@@ -244,7 +244,10 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
     this.saveChatClosedState();
     this.messages = [];
     localStorage.removeItem('chatMessages');
+    localStorage.removeItem('userDetails');
     this.webSocketService.connect();
     this.scrollToBottom();
+    this.isChatOpen=!this.isChatOpen
+    window.location.reload();
   }
 }

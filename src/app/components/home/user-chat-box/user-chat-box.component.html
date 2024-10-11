@@ -13,7 +13,7 @@
     <div class="actions">
       <button class="toggle-btn" (click)="toggleChat()">⬇️</button>
     </div>
-    <div class="actions" *ngIf="!isChatClosed">
+    <div class="actions" *ngIf="!isChatClosed && isDetailsSubmitted">
       <button class="toggle-btn" (click)="closeChat()">❎</button>
     </div>
   </div>
