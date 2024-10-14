@@ -27,15 +27,18 @@
 }
 
 .start-chat-message svg {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   color: #888; /* Adjust the color of the SVG icon */
+  opacity: 0.9;
 }
 
 .start-chat-message p {
   margin: 0;
-  font-size: 20px;
-  color: #555; /* Adjust the text color as needed */
+  font-size: 22px;
+  color: #555; 
+  font-weight: 500;
+  opacity: 0.9;/* Adjust the text color as needed */
 }
 
 
@@ -55,6 +58,7 @@
   font-weight: 525;
   font-size: 18px;
   margin: 0; /* Remove default margin */
+  letter-spacing: 0.4px;
 }
 
 /* Messages styling */
@@ -90,8 +94,8 @@
   color: white;
   font-weight: 500;
   border-radius: 18px 18px 0 18px; /* Rounded corners for user bubbles */
-  padding: 10px 15px; /* Add padding for the bubble */
-  max-width: 70%; /* Limit the width of the message */
+  padding: 12px;/* Add padding for the bubble */
+  max-width: 90%; /* Limit the width of the message */
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
   word-wrap: break-word; /* Break long words */
 }
@@ -115,6 +119,12 @@
   transform: scale(1.02); /* Slightly enlarge on hover */
   transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.bubble p{
+  margin: 0;
+  padding: 4px;
+  font-size: 16px;
 }
 
 /* Timestamp styling */
@@ -228,7 +238,7 @@ mat-menu {
   display: flex; /* Use flexbox for alignment */
   align-items: center; /* Center icons and text vertically */
   padding: 10px 20px; /* Padding around items */
-  color: #333; /* Default text color */
+  color: #333; /* start-chat-messageefault text color */
   font-size: 16px; /* Font size for text */
   transition: background-color 0.2s ease; /* Transition for hover effect */
 }

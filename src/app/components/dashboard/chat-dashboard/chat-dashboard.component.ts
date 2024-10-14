@@ -136,11 +136,13 @@ export class ChatDashboardComponent
   }
 
   private scrollToBottom(): void {
-    try {
-      this.messageContainer.nativeElement.scrollTop =
-        this.messageContainer.nativeElement.scrollHeight;
-    } catch (err) {
-      console.error('Scroll to bottom failed:', err);
+    if (this.messageContainer) {
+      try {
+        this.messageContainer.nativeElement.scrollTop =
+          this.messageContainer.nativeElement.scrollHeight;
+      } catch (err) {
+        console.error('Scroll to bottom failed:', err);
+      }
     }
   }
 

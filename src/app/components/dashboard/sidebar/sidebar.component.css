@@ -75,7 +75,11 @@
   /* color: #333; */
   opacity: 0.5;
   margin-top: 2px;
+  
+  
 }
+
+
 
 .dropdown-menu {
   display: none;
@@ -88,9 +92,9 @@
   
 }
 
-.dropdown:hover .dropdown-menu {
+ .dropdown:hover .dropdown-menu {
   display: block;
-}
+} 
 
 .dropdown-item {
   display: flex;                     
