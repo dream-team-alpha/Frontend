@@ -84,10 +84,15 @@ export class ChatDashboardComponent
 
   setCurrentUser(): void {
     const userIdNum = Number(this.userId);
-    this.userService.getUserById(userIdNum).subscribe((user) => {
-      this.user = user;
-    });
+    if (isNaN(userIdNum)) {
+      this.user = undefined;
+    } else {
+      this.userService.getUserById(userIdNum).subscribe((user) => {
+        this.user = user;
+      });
+    }
   }
+  
 
   sendMessage(): void {
     if (this.newMessageContent.trim() !== '') {
@@ -141,15 +146,18 @@ export class ChatDashboardComponent
 
   shouldShowTimestamp(index: number): boolean {
     if (index === this.messages.length - 1) {
-      return true;
+      return true; // Always show the timestamp for the last message
     }
-
+  
     const currentMessage = this.messages[index];
     const nextMessage = this.messages[index + 1];
-
+  
     const currentTime = new Date(currentMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const nextTime = new Date(nextMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    return currentTime !== nextTime;
+  
+    const isCurrentUser = currentMessage.senderType === 'user';
+    const isNextUser = nextMessage.senderType === 'user';
+  
+    return currentTime !== nextTime || isCurrentUser !== isNextUser;
   }
 }

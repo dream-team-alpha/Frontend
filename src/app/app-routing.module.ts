@@ -22,7 +22,7 @@ const routes: Routes = [
       // Add the new route as a child of AdminDashboardComponent
       { path: 'manage-sub-admins', component: ManageSubAdminsComponent },
       { path: 'chat/:id', component: ChatDashboardComponent },
-      { path: 'chat', component: SidebarComponent },
+      { path: 'chat', component: ChatDashboardComponent },
       { path: 'manage-profile', component: ProfileComponent },
     ]
    },

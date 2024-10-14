@@ -1,75 +1,81 @@
 <div class="chat-dashboard">
   <app-sidebar></app-sidebar>
   <div class="window-chat">
-    <div class="chat-header">
-      <img
-        src="https://cdn-icons-png.flaticon.com/128/15444/15444770.png"
-        alt="Avatar"
-        class="avatar"
-      />
-     
-      <p class="user-name">{{ user?.name }}</p>
-      
-      <button class="chat-dropdown" mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-    
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item>
-          <mat-icon>account_circle</mat-icon>
-          <span>Contact info</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon>check_circle_outline</mat-icon>
-          <span>Select messages</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon>notifications_off</mat-icon>
-          <span>Mute notifications</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon>clear</mat-icon>
-          <span>Clear messages</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon>delete</mat-icon>
-          <span>Delete chat</span>
-        </button>
-      </mat-menu>
+    <!-- Check if user is not defined to show the default message -->
+    <div *ngIf="!user; else chatContent" class="start-chat-message">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" fit="" height="100%" width="100%" preserveAspectRatio="xMidYMid meet" focusable="false">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"></path>
+    </svg>
+    <p>Select a conversation or start a new chat</p>
     </div>
     
-
-    <div class="message-container" #messageContainer>
-      <!-- Message blocks -->
-      <div
-        *ngFor="let message of messages; let i = index"
-        class="message"
-        [class.user]="message.senderType === 'user'"
-        [class.admin]="message.senderType === 'admin'"
-      >
-        <div class="bubble">
-          <p>{{ message.content }}</p>
-        </div>
-    
-        <!-- Show timestamp on the last message of the same time group -->
-        <span class="timestamp" *ngIf="shouldShowTimestamp(i)">
-          {{ message.createdAt | date: 'shortTime' }}
-        </span>
+    <!-- Chat content -->
+    <ng-template #chatContent>
+      <div class="chat-header">
+        <img
+          src="https://cdn-icons-png.flaticon.com/128/15444/15444770.png"
+          alt="Avatar"
+          class="avatar"
+        />
+        <p class="user-name">{{ user?.name }}</p>
+        <button class="chat-dropdown" mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>account_circle</mat-icon>
+            <span>Contact info</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>check_circle_outline</mat-icon>
+            <span>Select messages</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>notifications_off</mat-icon>
+            <span>Mute notifications</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>clear</mat-icon>
+            <span>Clear messages</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>delete</mat-icon>
+            <span>Delete chat</span>
+          </button>
+        </mat-menu>
       </div>
-    </div>
-    
-    
-    <!-- Chat input -->
-    <div class="chat-input-container">
-      <input
-        class="chat-input"
-        [(ngModel)]="newMessageContent"
-        placeholder="Type a message"
-        (keydown.enter)="sendMessage()"
-      />
-      <button class="send-button" (click)="sendMessage()">
-        <img src="/assets/send.png" alt="Send" width="23" height="23" />
-      </button>
-    </div>
+
+      <div class="message-container" #messageContainer>
+        <!-- Message blocks -->
+        <div
+          *ngFor="let message of messages; let i = index"
+          class="message"
+          [class.user]="message.senderType === 'user'"
+          [class.admin]="message.senderType === 'admin'"
+        >
+          <div class="bubble">
+            <p>{{ message.content }}</p>
+          </div>
+
+          <!-- Show timestamp on the last message of the same time group -->
+          <span class="timestamp" *ngIf="shouldShowTimestamp(i)">
+            {{ message.createdAt | date: 'shortTime' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Chat input -->
+      <div class="chat-input-container">
+        <input
+          class="chat-input"
+          [(ngModel)]="newMessageContent"
+          placeholder="Type a message"
+          (keydown.enter)="sendMessage()"
+        />
+        <button class="send-button" (click)="sendMessage()">
+          <img src="/assets/send.png" alt="Send" width="23" height="23" />
+        </button>
+      </div>
+    </ng-template>
   </div>
 </div>

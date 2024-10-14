@@ -14,6 +14,31 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
 }
 
+.start-chat-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: #555;
+  font-size: 18px;
+  gap: 16px; /* Space between the SVG and the text */
+}
+
+.start-chat-message svg {
+  width: 100px;
+  height: 100px;
+  color: #888; /* Adjust the color of the SVG icon */
+}
+
+.start-chat-message p {
+  margin: 0;
+  font-size: 20px;
+  color: #555; /* Adjust the text color as needed */
+}
+
+
 /* Chat Header */
 .chat-header {
   display: flex;
