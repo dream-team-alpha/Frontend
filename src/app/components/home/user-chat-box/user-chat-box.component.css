@@ -420,9 +420,42 @@
     text-decoration: underline;
 }
 
+.virtual-assistant-message {
+    background-color: #ffffff; 
+    border: 1px solid rgba(157, 24, 139, 0.754); 
+    border-radius: 15px 15px 15px 0; 
+    padding: 2px 10px; 
+    max-width: 280px; 
+    font-family: 'Inter', sans-serif; 
+    line-height: 1.2; 
+    color: #333; 
+    position: relative; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+}
+
+.virtual-assistant-message h1 {
+    font-size: 16px; 
+    margin: 0; 
+    font-weight: 500; 
+    display: flex; 
+    align-items: center; 
+}
+
+.virtual-assistant-message p {
+    font-size: 14px; 
+}
+
+.virtual-assistant-message .emoji {
+    margin-left: 5px; 
+    vertical-align: middle; 
+}
+
+.virtual-assistant-message:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); 
+    transition: box-shadow 0.3s ease; 
+}
 
 
-/* Keyframes for fade-in effect */
 @keyframes fadeIn {
     0% {
         opacity: 0;

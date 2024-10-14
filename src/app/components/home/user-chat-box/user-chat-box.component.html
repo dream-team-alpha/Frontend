@@ -81,7 +81,13 @@
     </div>
 
    <!-- Messages display -->
-<div class="messages">
+<div class="messages" *ngIf="isDetailsSubmitted">
+  <div class="virtual-assistant-message">
+    <h1>
+        Hi, this is our virtual assistant!<span class="emoji">👋</span>
+    </h1>
+    <p>Tell us how we can help.</p>
+</div>
   <div *ngFor="let msg of messages; let i = index">
     <p
       [ngClass]="{

@@ -43,17 +43,21 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
 
   shouldShowTimestamp(index: number): boolean {
     if (index === this.messages.length - 1) {
-      return true;
+      return true; // Always show the timestamp for the last message
     }
-
+  
     const currentMessage = this.messages[index];
     const nextMessage = this.messages[index + 1];
-
+  
     const currentTime = new Date(currentMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const nextTime = new Date(nextMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    return currentTime !== nextTime;
+  
+    const isCurrentUser = currentMessage.senderType === 'user';
+    const isNextUser = nextMessage.senderType === 'user';
+  
+    return currentTime !== nextTime || isCurrentUser !== isNextUser;
   }
+  
 
   constructor(
     private userService: UserService,
