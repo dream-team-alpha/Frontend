@@ -1,8 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { io } from 'socket.io-client';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { WebSocketService } from 'src/app/services/web-socket/websocket.service';
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+}
 
 export interface Message {
   senderId: string;
@@ -32,21 +39,21 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   isChatClosed = false;
 
   private newMessageSubscription!: Subscription;
+  private userCreatedSubscription!: Subscription;
 
   shouldShowTimestamp(index: number): boolean {
     if (index === this.messages.length - 1) {
       return true;
     }
-  
+
     const currentMessage = this.messages[index];
     const nextMessage = this.messages[index + 1];
-  
+
     const currentTime = new Date(currentMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const nextTime = new Date(nextMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  
+
     return currentTime !== nextTime;
   }
-  
 
   constructor(
     private userService: UserService,
@@ -55,6 +62,9 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    const socket = io('http://localhost:5000');
+    this.webSocketService.setSocketInstance(socket);
+    this.subscribeToUserCreation();
     this.loadUserDetails();
     this.loadMessages();
     this.loadChatClosedState();
@@ -65,10 +75,12 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       this.subscribeToNewMessages();
     }
     window.addEventListener('beforeunload', this.onBeforeUnload.bind(this));
-
   }
 
   ngOnDestroy(): void {
+    if (this.userCreatedSubscription) {
+      this.userCreatedSubscription.unsubscribe();
+    }
     if (this.newMessageSubscription) {
       this.newMessageSubscription.unsubscribe();
     }
@@ -78,7 +90,13 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
     }
 
     window.removeEventListener('beforeunload', this.onBeforeUnload.bind(this));
+  }
 
+  private subscribeToUserCreation(): void {
+    this.userCreatedSubscription = this.webSocketService.userCreated$.subscribe((user: User) => {
+      console.log('New user created:', user);
+      // Handle the new user creation event (e.g., update UI, show notification)
+    });
   }
 
   private onBeforeUnload(event: BeforeUnloadEvent): void {
@@ -87,7 +105,7 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       this.clearLocalStorage();
     }
   }
-  
+
   private clearLocalStorage(): void {
     localStorage.removeItem('chatMessages');
     localStorage.removeItem('userDetails');
@@ -122,6 +140,9 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
         this.userId = response.id;
         this.isDetailsSubmitted = true;
         this.saveUserDetails();
+
+        // Emit user creation event via WebSocket
+        this.webSocketService.emitUserCreated({ id: this.userId, name: this.name, email: this.email });
 
         // Only connect if the chat is not closed
         if (!this.isChatClosed) {
@@ -212,9 +233,7 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   }
 
   private loadMessages(): void {
-    const storedMessages = JSON.parse(
-      localStorage.getItem('chatMessages') || '[]'
-    );
+    const storedMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
     this.messages = storedMessages;
   }
 
@@ -249,7 +268,6 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       (response) => {
         console.log('Message saved to backend:', response);
         this.webSocketService.sendMessage(closeChatMessage);
-
         this.messages.push(closeChatMessage);
         this.updateMessageCache();
         this.scrollToBottom();
@@ -280,7 +298,7 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
     localStorage.removeItem('userDetails');
     this.webSocketService.connect();
     this.scrollToBottom();
-    this.isChatOpen=!this.isChatOpen
-    window.location.reload();
+    this.isChatOpen = !this.isChatOpen;
+    window.location.reload(); // This line reloads the page. You may want to handle this differently.
   }
 }

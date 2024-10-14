@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
+import { User } from 'src/app/components/home/user-chat-box/user-chat-box.component';
 
 @Injectable({
   providedIn: 'root',
@@ -9,14 +10,22 @@ export class WebSocketService {
   private socket!: Socket;
   private messageSubject = new Subject<any>();
   public message$ = this.messageSubject.asObservable();
+  private userCreatedSubject = new Subject<any>();
+  public userCreated$ = this.userCreatedSubject.asObservable();
   private isChatClosed = false;
 
   constructor() {
-    this.socket = io('http://localhost:5000'); // Update with your server URL
+    this.connect()
   }
 
   connect(): void {
+    this.socket = io('http://localhost:5000');
+
     this.isChatClosed = localStorage.getItem('isChatClosed') === 'true';
+
+    this.socket.on('userCreated', (user) => {
+      this.userCreatedSubject.next(user);
+    });
 
     if (this.isChatClosed) {
       console.log('Chat is closed. WebSocket connection not allowed.');
@@ -50,5 +59,12 @@ export class WebSocketService {
 
   setChatClosed(state: boolean): void {
     this.isChatClosed = state;
+  }
+
+  setSocketInstance(socketInstance: Socket) {
+    this.socket = socketInstance;
+  }
+  emitUserCreated(user: User) {
+    this.socket.emit('userCreated', user);
   }
 }

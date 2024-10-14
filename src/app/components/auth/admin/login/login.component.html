@@ -30,9 +30,6 @@
                           formControlName="password" 
                           required
                       />
-                      <button mat-icon-button matSuffix (click)="hideShowPass()" tabindex="-1">
-                          <mat-icon>{{ isText ? 'visibility' : 'visibility_off' }}</mat-icon>
-                      </button>
                       <mat-error *ngIf="loginForm.controls['password'].dirty && loginForm.hasError('required', 'password')">
                           *Password is required
                       </mat-error>

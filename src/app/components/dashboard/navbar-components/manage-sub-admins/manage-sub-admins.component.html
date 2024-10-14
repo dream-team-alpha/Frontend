@@ -138,18 +138,6 @@
                 formControlName="password"
                 required
               />
-              <div class="input-group-append">
-                <button
-                  type="button"
-                  class="password-toggle"
-                  (click)="togglePasswordVisibility()"
-                >
-                  <i
-                    class="fa"
-                    [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
-                  ></i>
-                </button>
-              </div>
             </div>
           </div>
   
@@ -163,20 +151,6 @@
                 formControlName="passwordConfirmation"
                 required
               />
-              <div class="input-group-append">
-                <button
-                  type="button"
-                  class="password-toggle"
-                  (click)="togglePasswordConfirmationVisibility()"
-                >
-                  <i
-                    class="fa"
-                    [ngClass]="
-                      showPasswordConfirmation ? 'fa-eye-slash' : 'fa-eye'
-                    "
-                  ></i>
-                </button>
-              </div>
             </div>
             <div
               *ngIf="subAdminForm.errors?.['passwordsMismatch']"
