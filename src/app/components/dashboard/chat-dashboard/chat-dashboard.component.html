@@ -7,13 +7,13 @@
         alt="Avatar"
         class="avatar"
       />
+     
       <p class="user-name">{{ user?.name }}</p>
       
       <button class="chat-dropdown" mat-icon-button [matMenuTriggerFor]="menu">
         <mat-icon>more_vert</mat-icon>
       </button>
     
-      
       <mat-menu #menu="matMenu">
         <button mat-menu-item>
           <mat-icon>account_circle</mat-icon>
@@ -42,7 +42,7 @@
     <div class="message-container" #messageContainer>
       <!-- Message blocks -->
       <div
-        *ngFor="let message of messages"
+        *ngFor="let message of messages; let i = index"
         class="message"
         [class.user]="message.senderType === 'user'"
         [class.admin]="message.senderType === 'admin'"
@@ -50,11 +50,14 @@
         <div class="bubble">
           <p>{{ message.content }}</p>
         </div>
-        <span class="timestamp">
+    
+        <!-- Show timestamp on the last message of the same time group -->
+        <span class="timestamp" *ngIf="shouldShowTimestamp(i)">
           {{ message.createdAt | date: 'shortTime' }}
         </span>
       </div>
     </div>
+    
     
     <!-- Chat input -->
     <div class="chat-input-container">

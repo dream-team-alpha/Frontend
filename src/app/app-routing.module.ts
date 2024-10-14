@@ -10,6 +10,7 @@ import { ManageSubAdminsComponent } from './components/dashboard/navbar-componen
 import { UserChatBoxComponent } from './components/home/user-chat-box/user-chat-box.component';
 import { ChatDashboardComponent } from './components/dashboard/chat-dashboard/chat-dashboard.component';
 import { ProfileComponent } from './components/dashboard/profile/profile.component';
+import { SidebarComponent } from './components/dashboard/sidebar/sidebar.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -20,7 +21,7 @@ const routes: Routes = [
     children: [
       // Add the new route as a child of AdminDashboardComponent
       { path: 'manage-sub-admins', component: ManageSubAdminsComponent },
-      { path: 'chat', component: ChatDashboardComponent },
+      { path: 'chat', component: SidebarComponent },
       { path: 'chat/:id', component: ChatDashboardComponent },
       { path: 'manage-profile', component: ProfileComponent },
     ]

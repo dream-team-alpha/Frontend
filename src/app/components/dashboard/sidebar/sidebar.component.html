@@ -56,9 +56,12 @@
         type="text"
         placeholder="Search or start new chat"
         class="search-input"
+        [(ngModel)]="searchText"
       />
     </div>
   </div>
 </div>
+
+
   <!-- Contact List Component -->
-  <app-user-list></app-user-list>
+  <app-user-list [searchText]="searchText"></app-user-list>

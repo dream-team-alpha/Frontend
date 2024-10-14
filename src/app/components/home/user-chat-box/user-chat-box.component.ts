@@ -33,6 +33,21 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
 
   private newMessageSubscription!: Subscription;
 
+  shouldShowTimestamp(index: number): boolean {
+    if (index === this.messages.length - 1) {
+      return true;
+    }
+  
+    const currentMessage = this.messages[index];
+    const nextMessage = this.messages[index + 1];
+  
+    const currentTime = new Date(currentMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const nextTime = new Date(nextMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+    return currentTime !== nextTime;
+  }
+  
+
   constructor(
     private userService: UserService,
     private webSocketService: WebSocketService,

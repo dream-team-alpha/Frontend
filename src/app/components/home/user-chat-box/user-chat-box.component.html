@@ -80,21 +80,26 @@
       </form>
     </div>
 
-    <!-- Messages display -->
-    <div class="messages">
-      <div *ngFor="let msg of messages">
-        <p
-          [ngClass]="{
-            sent: msg.senderType === 'user',
-            received: msg.senderType === 'admin'
-          }"
-        >
-          <strong>{{ msg.senderType === "user" ? "You" : "Support" }} : </strong>
-          {{ msg.content }}
-          <span class="timestamp">{{ formatDate(msg.createdAt) }}</span>
-        </p>
-      </div>
-    </div>
+   <!-- Messages display -->
+<div class="messages">
+  <div *ngFor="let msg of messages; let i = index">
+    <p
+      [ngClass]="{
+        sent: msg.senderType === 'user',
+        received: msg.senderType === 'admin'
+      }"
+    >
+      <strong>{{ msg.senderType === 'user' ? 'You' : 'Support' }} : </strong>
+      {{ msg.content }}
+      
+      <!-- Only show timestamp on the last message of the same group -->
+      <span class="timestamp" *ngIf="shouldShowTimestamp(i)">
+        {{ formatDate(msg.createdAt) }}
+      </span>
+    </p>
+  </div>
+</div>
+
 
     <!-- Message input area, only shown if chat is not closed -->
     <div *ngIf="isDetailsSubmitted && !isChatClosed" class="input-area">

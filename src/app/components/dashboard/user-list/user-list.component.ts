@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user/user.service';
 
@@ -18,6 +18,8 @@ interface User {
 export class UserListComponent implements OnInit {
   users: User[] = [];
   @Input() searchText: string = '';
+  @Output() userSelected = new EventEmitter<User>(); 
+  
 
   constructor(private userService: UserService, private router: Router) {}
 
@@ -35,6 +37,10 @@ export class UserListComponent implements OnInit {
     // Navigate to the chat route with the user's ID
     this.router.navigate([`/support-team-admin-dashboard/chat/${userId}`]);
   }
+  selectUser(user: User): void {
+    this.userSelected.emit(user); // Emit the selected user
+  }
+
 
   // Filter users based on the search text
   get filteredUsers() {
@@ -42,4 +48,5 @@ export class UserListComponent implements OnInit {
       user.name.toLowerCase().includes(this.searchText.toLowerCase())
     );
   }
+  
 }

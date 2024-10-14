@@ -1,3 +1,6 @@
+ 
+
+
 .contact-list {
   width: 400px;
   background-color: rgb(248, 250, 252);
@@ -6,6 +9,7 @@
   flex-direction: column;
   
 }   
+  
 
 .parent-header {
   padding: 20px;

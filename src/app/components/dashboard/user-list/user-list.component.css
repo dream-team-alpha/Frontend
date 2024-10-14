@@ -60,6 +60,8 @@
 
 .user-list-container::-webkit-scrollbar {
   width: 6px;
+  
+  
 }
 
 .user-list-container::-webkit-scrollbar-thumb {
