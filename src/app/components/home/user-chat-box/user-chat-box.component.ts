@@ -49,6 +49,8 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       this.webSocketService.connect();
       this.subscribeToNewMessages();
     }
+    window.addEventListener('beforeunload', this.onBeforeUnload.bind(this));
+
   }
 
   ngOnDestroy(): void {
@@ -59,6 +61,22 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
     if (!this.isChatClosed) {
       this.webSocketService.disconnect();
     }
+
+    window.removeEventListener('beforeunload', this.onBeforeUnload.bind(this));
+
+  }
+
+  private onBeforeUnload(event: BeforeUnloadEvent): void {
+    // Check if the chat is closed before clearing storage.
+    if (this.isChatClosed) {
+      this.clearLocalStorage();
+    }
+  }
+  
+  private clearLocalStorage(): void {
+    localStorage.removeItem('chatMessages');
+    localStorage.removeItem('userDetails');
+    localStorage.removeItem('isChatClosed');
   }
 
   toggleChat(): void {
