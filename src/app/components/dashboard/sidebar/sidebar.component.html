@@ -1,67 +1,73 @@
-<div class="contact-list">
-  <div class="parent-header">
-    <div class="chat-header">
-      <div class="user-info">
-        <img
-          src="/assets/support.png"
-          alt="Avatar"
-          class="avatar"
-        />
-        <span>Support Team</span>
-      </div>
-      <div class="sidebar-toggle">
-        <mat-icon role="img" class="mat-icon notranslate" aria-hidden="true">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-        </mat-icon>
-      </div>
-      <div class="dropdown">
-        <button class="dropdown-toggle">⋮</button>
-        <div class="dropdown-menu">
-          <div class="dropdown-item">
-            <span class="icon"><i class="fas fa-users"></i></span>
-            <span class="text">New group</span>
-          </div>
-          <div class="dropdown-item">
-            <span class="icon"><i class="fas fa-comments"></i></span>
-            <span class="text">Create a room</span>
-          </div>
-          <div class="dropdown-item">
-            <span class="icon"><i class="fas fa-user"></i></span>
-            <span class="text">Profile</span>
-          </div>
-          <div class="dropdown-item">
-            <span class="icon"><i class="fas fa-cog"></i></span>
-            <span class="text">Settings</span>
+<div class="chat-container">
+  <div class="contact-list">
+    <div class="parent-header">
+      <div class="chat-header">
+        <div class="user-info">
+          <img
+            src="/assets/support.png"
+            alt="Avatar"
+            class="avatar"
+          />
+          <span>Support Team</span>
+        </div>
+        <div class="sidebar-toggle">
+          <mat-icon role="img" class="mat-icon notranslate" aria-hidden="true">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </mat-icon>
+        </div>
+        <div class="dropdown">
+          <button class="dropdown-toggle">⋮</button>
+          <div class="dropdown-menu">
+            <div class="dropdown-item">
+              <span class="icon"><i class="fas fa-users"></i></span>
+              <span class="text">New group</span>
+            </div>
+            <div class="dropdown-item">
+              <span class="icon"><i class="fas fa-comments"></i></span>
+              <span class="text">Create a room</span>
+            </div>
+            <div class="dropdown-item">
+              <span class="icon"><i class="fas fa-user"></i></span>
+              <span class="text">Profile</span>
+            </div>
+            <div class="dropdown-item">
+              <span class="icon"><i class="fas fa-cog"></i></span>
+              <span class="text">Settings</span>
+            </div>
           </div>
         </div>
       </div>
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <i class="fas fa-search search-icon"></i>
+        <input
+          type="text"
+          placeholder="Search or start new chat"
+          class="search-input"
+          [(ngModel)]="searchText"
+        />
+      </div>
     </div>
-    <!-- Search Bar -->
-    <div class="search-bar">
-      <i class="fas fa-search search-icon"></i>
-      <input
-        type="text"
-        placeholder="Search or start new chat"
-        class="search-input"
-        [(ngModel)]="searchText"
-      />
-    </div>
+    
+    <!-- Contact List Component -->
+    <app-user-list [searchText]="searchText"></app-user-list>
   </div>
-  <!-- Contact List Component -->
-  <app-user-list [searchText]="searchText"></app-user-list>
+  
+  <!-- Message for starting chat on the right side -->
+  <div class="default-message">
+    <p>Start chat with user</p>
+  </div>
 </div>
-
-
