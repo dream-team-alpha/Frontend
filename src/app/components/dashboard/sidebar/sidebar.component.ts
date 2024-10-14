@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 import { User } from 'src/app/services/user/user.service';
-
 
 @Component({
   selector: 'app-sidebar',
@@ -9,15 +9,12 @@ import { User } from 'src/app/services/user/user.service';
 })
 export class SidebarComponent {
   @Output() userSelected = new EventEmitter<User>(); 
-  isDropdownOpen: boolean = false;
   searchText: string = '';
-  selectedUser: User | null = null;
-   
+
+  constructor(private router: Router) {}
 
   onUserSelected(user: User): void {
-    this.selectedUser = user;
-    this.userSelected.emit(user); // Emit the selected user
+    this.userSelected.emit(user);
+    this.router.navigate([`/support-team-admin-dashboard/chat/${user.id}`]);
   }
-  
-  // Additional logic for dropdown and other sidebar actions
 }

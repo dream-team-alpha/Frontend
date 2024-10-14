@@ -28,12 +28,12 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadUsers();
-    this.subscribeToUserCreation(); // Subscribe to user creation events
+    this.subscribeToUserCreation();
   }
 
   ngOnDestroy(): void {
     if (this.userCreatedSubscription) {
-      this.userCreatedSubscription.unsubscribe(); // Unsubscribe to avoid memory leaks
+      this.userCreatedSubscription.unsubscribe();
     }
   }
 
@@ -44,15 +44,13 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   openChat(userId: number): void {
-    // Navigate to the chat route with the user's ID
     this.router.navigate([`/support-team-admin-dashboard/chat/${userId}`]);
   }
 
   selectUser(user: User): void {
-    this.userSelected.emit(user); // Emit the selected user
+    this.userSelected.emit(user);
   }
 
-  // Subscribe to user creation events from the WebSocketService
   private subscribeToUserCreation(): void {
     this.userCreatedSubscription = this.webSocketService.userCreated$.subscribe(
       (user: User) => {
@@ -62,13 +60,11 @@ export class UserListComponent implements OnInit, OnDestroy {
         );
         if (!userExists) {
           this.users.unshift(user);
-        } else {
-          console.log(`User added`);
         }
       }
     );
   }
-  // Filter users based on the search text
+
   get filteredUsers() {
     return this.users.filter(user =>
       user.name.toLowerCase().includes(this.searchText.toLowerCase())
