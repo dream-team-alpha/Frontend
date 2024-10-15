@@ -52,7 +52,7 @@ export class ChatDashboardComponent
           .subscribe((message: Message) => {
             if (!this.isMessageDuplicate(message)) {
               this.messages.push(message);
-              this.scrollToBottom();
+              this.scrollToBottom(); // Scroll to the bottom when a new message is received
             }
           });
         this.isSubscribed = true;
@@ -61,7 +61,7 @@ export class ChatDashboardComponent
   }
 
   ngAfterViewChecked() {
-    this.scrollToBottom();
+    this.scrollToBottom(); // Scroll to bottom after view checked
   }
 
   ngOnDestroy(): void {
@@ -78,21 +78,19 @@ export class ChatDashboardComponent
       .getUserMessages(userIdNum, adminIdNum)
       .subscribe((data: Message[]) => {
         this.messages = data;
-        this.scrollToBottom();
+        this.scrollToBottom(); // Scroll to bottom after loading messages
       });
   }
 
   setCurrentUser(): void {
     const userIdNum = Number(this.userId);
     if (isNaN(userIdNum)) {
-      this.user = undefined;
-    } else {
-      this.userService.getUserById(userIdNum).subscribe((user) => {
-        this.user = user;
-      });
-    }
+      return; // No action if userId is invalid
+    } 
+    this.userService.getUserById(userIdNum).subscribe((user) => {
+      this.user = user;
+    });
   }
-  
 
   sendMessage(): void {
     if (this.newMessageContent.trim() !== '') {
@@ -111,9 +109,9 @@ export class ChatDashboardComponent
           (response) => {
             if (!this.isMessageDuplicate(message)) {
               this.messages.push(message);
-              this.scrollToBottom();
+              this.scrollToBottom(); // Scroll to bottom after sending a message
             }
-            this.newMessageContent = '';
+            this.newMessageContent = ''; // Clear input field
           },
           (error) => {
             console.error('Error sending message to backend:', error);
@@ -150,16 +148,25 @@ export class ChatDashboardComponent
     if (index === this.messages.length - 1) {
       return true; // Always show the timestamp for the last message
     }
-  
+
     const currentMessage = this.messages[index];
     const nextMessage = this.messages[index + 1];
-  
+
     const currentTime = new Date(currentMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const nextTime = new Date(nextMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  
+
     const isCurrentUser = currentMessage.senderType === 'user';
     const isNextUser = nextMessage.senderType === 'user';
-  
+
     return currentTime !== nextTime || isCurrentUser !== isNextUser;
+  }
+
+  // New method to get the last message date
+  getLastMessageDate(): string {
+    if (this.messages.length === 0) return '';
+
+    const lastMessage = this.messages[this.messages.length - 1]; // Get the last message
+    const date = new Date(lastMessage.createdAt);
+    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
   }
 }

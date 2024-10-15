@@ -21,7 +21,8 @@ export class UserListComponent implements OnInit, OnDestroy {
   users: User[] = [];
   @Input() searchText: string = '';
   @Output() userSelected = new EventEmitter<User>(); 
-  
+
+  selectedUserId: number | null = null; // Track the selected user
   private userCreatedSubscription!: Subscription;
 
   constructor(private userService: UserService, private router: Router, private webSocketService: WebSocketService) {}
@@ -44,6 +45,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   openChat(userId: number): void {
+    this.selectedUserId = userId; // Set selected user
     this.router.navigate([`/support-team-admin-dashboard/chat/${userId}`]);
   }
 

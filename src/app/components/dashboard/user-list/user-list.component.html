@@ -2,8 +2,11 @@
   <div *ngIf="users.length === 0">Loading users...</div>
   <div class="app-user-list">
     <div *ngFor="let user of filteredUsers">
-      <div class="contact-item" (click)="openChat(user.id)">
-      
+      <div
+        class="contact-item"
+        [ngClass]="{ 'selected': user.id === selectedUserId }"
+        (click)="openChat(user.id)"
+      >
         <img
           src="https://cdn-icons-png.flaticon.com/128/9131/9131529.png"
           alt="Avatar"
@@ -11,10 +14,7 @@
         />
         <div class="contact-info">
           <span class="contact-name">{{ user.name }}</span>
-          <div class="contact-message">
-            <!-- <span class="status-indicator"></span>  -->
-            See you tomorrow!
-          </div>
+          <div class="contact-message">See you tomorrow!</div>
         </div>
         <div class="contact-time">26/04/2021</div>
       </div>

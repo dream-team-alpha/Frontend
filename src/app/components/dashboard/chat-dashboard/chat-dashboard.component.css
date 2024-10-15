@@ -80,7 +80,12 @@
   margin-bottom: 5px; /* Space between messages */
   background-color: #fff;
 }
-
+.line.span{
+  color: #999;
+}
+.last-message-date{
+  color: #999;
+}
 /* User messages */
 .message.admin {
   align-items: flex-end; /* Align admin messages to the right */
@@ -154,8 +159,8 @@
 
 .chat-input {
   flex: 1; /* Allow input to take available space */
-  border: 3px solid ; /* Set border to transparent initially */
-  padding: 15px;
+  border: 2px solid ; /* Set border to transparent initially */
+  padding: 12px;
   border-color: #c7c3c3;
   border-radius: 25px; /* Rounded input */
   font-size: 14px;
@@ -167,7 +172,7 @@
   outline: none; /* Remove outline on focus */
   background-color: #e6e6e6; /* Darker gray on focus */
   border-color: #4f46e5; /* Border color on focus */
-  border-width:3px; /* Keep the same width on focus */
+  border-width:1px; /* Keep the same width on focus */
 }
 
 /* Add this to remove any top border that may appear */
@@ -260,6 +265,25 @@ mat-menu {
 ::ng-deep .mat-menu-item span {
   color: #1E293B; /* Default text color */
   opacity: 1; /* Full opacity */
+}
+.last-message-date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0; /* Adjust spacing as needed */
+}
+
+.line {
+  flex: 1;
+  border: 1px solid;
+  border-top: 1px solid #e0e0e0; /* Change color as needed */
+  margin: 0 10px; /* Space between line and date text */
+}
+
+.last-message-date span {
+  font-size: 16px; /* Change font size as needed */
+  color: #333; /* Change color as needed */
+  font-weight: 500; /* Change weight if needed */
 }
 
 

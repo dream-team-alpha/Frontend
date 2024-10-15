@@ -84,3 +84,6 @@
   display: flex;
   flex-direction: column; /* Ensure items stack vertically */
 }
+.contact-item.selected {
+  background-color: #e1e9f5; ;
+}
