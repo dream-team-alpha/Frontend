@@ -105,21 +105,4 @@ export class AuthService {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(catchError(this.handleError));
   }
-
-  // Get Sub-Admin Profile
-  getSubAdminProfile(subAdminId: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/api/subadmin/${subAdminId}`, {
-      headers: { 'Authorization': `Bearer ${this.getToken()}` }
-    }).pipe(catchError(this.handleError));
-  }
-
-  // Update Sub-Admin Profile
-  updateSubAdminProfile(subAdminId: string, profileData: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/api/subadmin/${subAdminId}`, profileData, {
-      headers: { 
-        'Content-Type': 'application/json', 
-        'Authorization': `Bearer ${this.getToken()}` 
-      }
-    }).pipe(catchError(this.handleError));
-  }
 }

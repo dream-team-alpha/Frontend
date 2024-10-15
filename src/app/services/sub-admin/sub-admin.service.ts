@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SubAdmin } from 'src/app/models/sub-admin-profile/sub-admin.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SubAdminService {
-  private apiUrl = 'http://localhost:5000/api/subadmin'; // Adjust the URL accordingly
+  private apiUrl = `${environment.apiUrl}/api/subadmin`;
 
   constructor(private http: HttpClient) {}
 
@@ -16,10 +17,6 @@ export class SubAdminService {
     return new HttpHeaders({
       'Authorization': `Bearer ${token}` // Use the Bearer token scheme
     });
-  }
-
-  getAllSubAdmins(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
   addSubAdmin(subAdmin: any): Observable<any> {
@@ -39,6 +36,6 @@ export class SubAdminService {
   }  
 
   getSubAdmins(): Observable<SubAdmin[]> {
-    return this.http.get<SubAdmin[]>(this.apiUrl, { headers: this.getHeaders() }); // Pass the headers with the request
+    return this.http.get<SubAdmin[]>(`${this.apiUrl}`, { headers: this.getHeaders() }); // Pass the headers with the request
   }
 }
