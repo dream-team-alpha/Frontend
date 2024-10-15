@@ -12,7 +12,7 @@ import { WebSocketService } from 'src/app/services/web-socket/websocket.service'
 import { UserService, User } from 'src/app/services/user/user.service';
 import { Message } from 'src/app/components/home/user-chat-box/user-chat-box.component';
 import { Subscription } from 'rxjs';
-import { ChatStateService } from 'src/app/services/chat-state/chat.state.service';  // Import the new service
+import { ChatStateService } from 'src/app/services/chat-state/chat.state.service';
 
 @Component({
   selector: 'app-chat-dashboard',
@@ -22,6 +22,9 @@ import { ChatStateService } from 'src/app/services/chat-state/chat.state.service
 export class ChatDashboardComponent
   implements OnInit, OnDestroy, AfterViewChecked
 {
+closeChat() {
+throw new Error('Method not implemented.');
+}
   @ViewChild('messageContainer') private messageContainer!: ElementRef;
 
   userId!: string;
@@ -31,25 +34,27 @@ export class ChatDashboardComponent
   newMessageSubscription: Subscription | undefined;
   private isSubscribed: boolean = false;
   user: User | undefined;
-  isChatClosed: boolean = false; // Added this to manage chat closure state
+  isChatClosed: boolean = false; // Track chat state
+  private chatClosedSubscription!: Subscription; // Subscription for chat closed state
 
   constructor(
     private route: ActivatedRoute,
     private chatService: ChatService,
     private webSocketService: WebSocketService,
     private userService: UserService,
-    private chatStateService: ChatStateService // Inject the service
+    private chatStateService: ChatStateService // Inject the chat state service
   ) {}
 
   ngOnInit(): void {
+    // Subscribe to route parameters
     this.route.paramMap.subscribe((params) => {
       this.userId = params.get('id')!;
       this.loadMessages();
       this.setCurrentUser();
-
       this.webSocketService.connect();
 
       if (!this.isSubscribed) {
+        // Subscribe to new messages
         this.newMessageSubscription = this.webSocketService
           .receiveNewMessage()
           .subscribe((message: Message) => {
@@ -63,8 +68,8 @@ export class ChatDashboardComponent
     });
 
     // Subscribe to chat closed state
-    this.chatStateService.chatClosed$.subscribe((isClosed) => {
-      this.isChatClosed = isClosed; // Update local state
+    this.chatClosedSubscription = this.chatStateService.chatClosed$.subscribe(closed => {
+      this.isChatClosed = closed; // Update local state based on the service
     });
   }
 
@@ -73,17 +78,24 @@ export class ChatDashboardComponent
   }
 
   ngOnDestroy(): void {
+    // Clean up subscriptions
     if (this.newMessageSubscription) {
       this.newMessageSubscription.unsubscribe();
       this.newMessageSubscription = undefined;
+    }
+
+    if (this.chatClosedSubscription) {
+      this.chatClosedSubscription.unsubscribe();
     }
   }
 
   confirmCloseChat(): void {
     this.isChatClosed = true; // Set chat state to closed
+    this.chatStateService.closeChat(); // Notify the service about the chat closure
     // Optionally, you can also add logic to handle chat closure (like notifying backend)
   }
 
+   
   loadMessages(): void {
     const userIdNum = Number(this.userId);
     const adminIdNum = Number(this.adminId);
@@ -99,40 +111,38 @@ export class ChatDashboardComponent
     const userIdNum = Number(this.userId);
     if (isNaN(userIdNum)) {
       return; // No action if userId is invalid
-    } 
+    }
     this.userService.getUserById(userIdNum).subscribe((user) => {
       this.user = user;
     });
   }
 
   sendMessage(): void {
-    if (this.newMessageContent.trim() === '' || this.isChatClosed) {
-      return; // Don't send messages if chat is closed
-    }
+    if (this.newMessageContent.trim() !== '' && !this.isChatClosed) {
+      const message: Message = {
+        content: this.newMessageContent,
+        senderId: this.adminId,
+        receiverId: this.userId,
+        senderType: 'admin',
+        receiverType: 'user',
+        createdAt: new Date().toISOString(),
+      };
 
-    const message: Message = {
-      content: this.newMessageContent,
-      senderId: this.adminId,
-      receiverId: this.userId,
-      senderType: 'admin',
-      receiverType: 'user',
-      createdAt: new Date().toISOString(),
-    };
-
-    if (!this.isMessageDuplicate(message)) {
-      this.webSocketService.sendMessage(message);
-      this.chatService.sendMessage(message).subscribe(
-        (response) => {
-          if (!this.isMessageDuplicate(message)) {
-            this.messages.push(message);
-            this.scrollToBottom(); // Scroll to bottom after sending a message
+      if (!this.isMessageDuplicate(message)) {
+        this.webSocketService.sendMessage(message);
+        this.chatService.sendMessage(message).subscribe(
+          (response) => {
+            if (!this.isMessageDuplicate(message)) {
+              this.messages.push(message);
+              this.scrollToBottom(); // Scroll to bottom after sending a message
+            }
+            this.newMessageContent = ''; // Clear input field
+          },
+          (error) => {
+            console.error('Error sending message to backend:', error);
           }
-          this.newMessageContent = ''; // Clear input field
-        },
-        (error) => {
-          console.error('Error sending message to backend:', error);
-        }
-      );
+        );
+      }
     }
   }
 
@@ -181,7 +191,7 @@ export class ChatDashboardComponent
     if (this.messages.length === 0) return '';
 
     const lastMessage = this.messages[this.messages.length - 1]; // Get the last message
-    const date = new Date(lastMessage.createdAt); // Get the date from the last message
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Format the date as needed
+    const date = new Date(lastMessage.createdAt);
+    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
   }
 }

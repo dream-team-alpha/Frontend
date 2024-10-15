@@ -3,7 +3,6 @@
   display: flex;
   height: 90vh; /* Full viewport height */
   overflow: hidden;
-  
 }
 
 .window-chat {
@@ -38,9 +37,8 @@
   font-size: 22px;
   color: #555; 
   font-weight: 500;
-  opacity: 0.9;/* Adjust the text color as needed */
+  opacity: 0.9; /* Adjust the text color as needed */
 }
-
 
 /* Chat Header */
 .chat-header {
@@ -49,8 +47,8 @@
   align-items: center;
   background-color: #f8fafc; /* White background for header */
   padding: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow under header */
-  /* border-radius: 10px; */
+  border-bottom: 1px solid #f8fafc;
+  box-shadow: 0 1px rgba(0, 0, 0, 0.1); /* Shadow under header */
   margin-bottom: 15px; /* Space between header and messages */
 }
 
@@ -68,11 +66,8 @@
   padding: 15px; /* General padding for the message container */
   background-color: #fff; /* Match background color */
   border-radius: 10px; /* Rounded corners for the message container */
- 
-  
 }
 
-/* Message block styling */
 /* Message block styling */
 .message {
   display: flex;
@@ -80,13 +75,14 @@
   margin-bottom: 5px; /* Space between messages */
   background-color: #fff;
 }
- 
+
 .last-message-date.span {
   font-size: 16px;
-  color:#c7c3c3;
+  color: #c7c3c3;
   font-weight: 500;
 }
-.line.message.date{
+
+.line.message.date {
   color: #c7c3c3;
 }
 
@@ -103,7 +99,7 @@
   color: white;
   font-weight: 500;
   border-radius: 18px 18px 0 18px; /* Rounded corners for user bubbles */
-  padding: 12px;/* Add padding for the bubble */
+  padding: 12px; /* Add padding for the bubble */
   max-width: 90%; /* Limit the width of the message */
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
   word-wrap: break-word; /* Break long words */
@@ -130,7 +126,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.bubble p{
+.bubble p {
   margin: 0;
   padding: 4px;
   font-size: 16px;
@@ -155,36 +151,33 @@
 .chat-input-container {
   display: flex;
   align-items: center;
-  background-color: white; /* White background for input area */
+  background: rgb(248, 250, 252); /* White background for input area */
   padding: 20px;
-  border: 1px solid #ddd; 
-  border-radius: 10px; /* Rounded corners */
+  border: 1px solid #ddd;
 }
 
 .chat-input {
   flex: 1; /* Allow input to take available space */
-  border: 2px solid ; /* Set border to transparent initially */
+  border: 2px solid; /* Set border to transparent initially */
   padding: 12px;
   border-color: #c7c3c3;
   border-radius: 25px; /* Rounded input */
   font-size: 14px;
-  background-color: #f1f1f1;
-   
+  background-color: white;
 }
 
 .chat-input:focus {
   outline: none; /* Remove outline on focus */
-  background-color: #e6e6e6; /* Darker gray on focus */
+  background-color: white; /* Darker gray on focus */
   border-color: #4f46e5; /* Border color on focus */
-  border-width:1px; /* Keep the same width on focus */
+  border-width: 1px; /* Keep the same width on focus */
 }
 
 /* Add this to remove any top border that may appear */
 
-
 .send-button {
   background-color: #fff; /* Blue background */
-  color: #1E293B; 
+  color: #1E293B;
   opacity: 0.9;
   padding: 10px 15px;
   border: none;
@@ -194,9 +187,8 @@
   transition: background-color 0.3s; /* Transition for hover effect */
 }
 
-
 .send-button:hover {
-  background-color:#faeeee; /* Darker blue on hover */
+  background-color: #faeeee; /* Darker blue on hover */
 }
 
 /* Avatar and User Name */
@@ -210,9 +202,10 @@
 .user-name {
   font-size: 14px;
   font-weight: 550; /* Adjust font weight for the name */
-  color: #1E293B; 
+  color: #1E293B;
   opacity: 0.90;
 }
+
 button[mat-menu-item] mat-icon {
   margin-left: auto;
 }
@@ -232,7 +225,6 @@ mat-menu {
   margin-left: auto;
   opacity: 0.5;
 }
-
 
 /* Custom styles for mat-menu */
 ::ng-deep .mat-menu-panel {
@@ -270,24 +262,82 @@ mat-menu {
   color: #1E293B; /* Default text color */
   opacity: 1; /* Full opacity */
 }
+
+/* Last Message Date */
 .last-message-date {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 20px 0; /* Adjust spacing as needed */
+  margin: 20px 0; /* Space around the last message date */
 }
 
 .line {
-  flex: 1;
-  border: 1px solid;
-  border-top: 1px solid #e0e0e0; /* Change color as needed */
-  margin: 0 10px; /* Space between line and date text */
+  flex: 1; /* Fill the remaining space */
+  border: 1px solid; /* Border for the horizontal line */
+  border-top: 1px solid #e0e0e0; /* Only the top border is visible */
+  margin: 0 10px; /* Space on the sides of the line */
 }
 
 .last-message-date span {
-  font-size: 16px; /* Change font size as needed */
-  color:#999; /* Change color as needed */
-  font-weight: 500; /* Change weight if needed */
+  font-size: 16px; /* Adjust size of the date text */
+  color: #999; /* Light gray color for the date */
+  font-weight: 500; /* Slightly thicker font weight */
 }
 
+/* Responsive Design using Media Queries */
+@media (max-width: 768px) {
+  .chat-header p {
+    font-size: 16px;
+  }
 
+  .avatar {
+    width: 35px;
+    height: 35px;
+  }
+
+  .message.admin .bubble,
+  .message.user .bubble {
+    max-width: 80%;
+  }
+
+  .chat-input-container {
+    padding: 15px;
+  }
+
+  .chat-input {
+    padding: 10px;
+  }
+
+  .send-button {
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .chat-header p {
+    font-size: 14px;
+  }
+
+  .avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .message.admin .bubble,
+  .message.user .bubble {
+    max-width: 100%;
+    font-size: 14px;
+  }
+
+  .chat-input-container {
+    padding: 10px;
+  }
+
+  .chat-input {
+    padding: 8px;
+  }
+
+  .send-button {
+    padding: 6px 10px;
+  }
+}
