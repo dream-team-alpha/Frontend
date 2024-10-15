@@ -333,14 +333,17 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       console.error('Please provide a star rating before submitting.');
       return;
     }
-
+  
     const feedbackData = {
       adminId: this.adminId,
       userId: this.userId,
-      feedback: this.feedback || null,
+      feedbackText: this.feedback || null, // Ensure this reads the current value of feedback
       rating: this.rating
     };
-
+  
+    // Log feedbackData to ensure it has the correct values
+    console.log('Submitting Feedback:', feedbackData);
+  
     this.chatService.submitFeedback(feedbackData).subscribe(
       (response) => {
         console.log('Feedback submitted successfully:', response);
@@ -351,4 +354,5 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       }
     );
   }
+  
 }
