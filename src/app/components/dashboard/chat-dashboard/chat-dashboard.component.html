@@ -42,30 +42,26 @@
         </mat-menu> -->
       </div>
 
-      <div class="message-container" #messageContainer>
-
-
-        <div class="last-message-date" *ngIf="messages.length > 0">
-          <hr class="line" />
-          <span class="message-date">{{ getLastMessageDate() }}</span>
-          <hr class="line" />
-        </div>
-
-        <!-- Message blocks -->
-        <div *ngFor="let message of messages; let i = index" class="message" [class.user]="message.senderType === 'user'" [class.admin]="message.senderType === 'admin'">
-          <div class="bubble">
-            <p>{{ message.content }}</p>
+      <div class="message-container" #messageContainer >
+        <div *ngFor="let message of messages; let i = index" class="message-group">
+          <div *ngIf="shouldShowDate(i)" class="date-header">
+            <hr class="line" />
+            <span class="message-date">{{ getMessageDate(message.createdAt) }}</span>
+            <hr class="line" />
           </div>
 
-          <!-- Show timestamp on the last message of the same time group -->
-          <span class="timestamp" *ngIf="shouldShowTimestamp(i)">
-            {{ message.createdAt | date: "shortTime" }}
-          </span>
+          <!-- Message content -->
+          <div class="message" [class.user]="message.senderType === 'user'" [class.admin]="message.senderType === 'admin'">
+            <div class="bubble">
+              <p>{{ message.content }}</p>
+            </div>
+            <span class="timestamp" *ngIf="shouldShowTimestamp(i)">
+              {{ message.createdAt | date: "shortTime" }}
+            </span>
+          </div>
         </div>
-
       </div>
 
-      
       <!-- Chat input -->
       <div class="chat-input-container">
         <input class="chat-input" [(ngModel)]="newMessageContent" placeholder="Type a message" (keydown.enter)="sendMessage()" />

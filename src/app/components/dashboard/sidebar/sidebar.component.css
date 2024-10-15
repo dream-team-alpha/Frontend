@@ -13,7 +13,6 @@
 
 .parent-header {
   padding: 20px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .chat-header {
@@ -21,6 +20,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  background-color: #F8FAFC;
 }
 
 .user-info {
@@ -137,7 +137,7 @@
   width: 100%;
   padding: 10px 10px 10px 60px;
   border-radius: 24px;
-  border: 3px solid #e6e6e6;
+  border: 1px solid #e6e6e6;
   background-color: white;
   font-size: 14px;
 }
@@ -149,8 +149,7 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #4a90e2;
-  border-width: 1px;
+  border-color: #7717f5;
 }
 
 .search-icon {

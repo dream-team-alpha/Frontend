@@ -4,7 +4,6 @@ import {
   OnDestroy,
   ViewChild,
   ElementRef,
-  AfterViewChecked,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChatService } from 'src/app/services/chat/chat.service';
@@ -20,11 +19,8 @@ import { ChatStateService } from 'src/app/services/chat-state/chat.state.service
   styleUrls: ['./chat-dashboard.component.css'],
 })
 export class ChatDashboardComponent
-  implements OnInit, OnDestroy, AfterViewChecked
+  implements OnInit, OnDestroy
 {
-closeChat() {
-throw new Error('Method not implemented.');
-}
   @ViewChild('messageContainer') private messageContainer!: ElementRef;
 
   userId!: string;
@@ -36,6 +32,9 @@ throw new Error('Method not implemented.');
   user: User | undefined;
   isChatClosed: boolean = false; // Track chat state
   private chatClosedSubscription!: Subscription; // Subscription for chat closed state
+
+  // Track if user is at the bottom of the message container
+  private isAtBottom: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -60,7 +59,9 @@ throw new Error('Method not implemented.');
           .subscribe((message: Message) => {
             if (!this.isMessageDuplicate(message)) {
               this.messages.push(message);
-              this.scrollToBottom(); // Scroll to the bottom when a new message is received
+              if (this.isAtBottom) {
+                this.scrollToBottom(); // Scroll to the bottom when a new message is received if user is at the bottom
+              }
             }
           });
         this.isSubscribed = true;
@@ -73,9 +74,6 @@ throw new Error('Method not implemented.');
     });
   }
 
-  ngAfterViewChecked() {
-    this.scrollToBottom(); // Scroll to bottom after view checked
-  }
 
   ngOnDestroy(): void {
     // Clean up subscriptions
@@ -95,7 +93,6 @@ throw new Error('Method not implemented.');
     // Optionally, you can also add logic to handle chat closure (like notifying backend)
   }
 
-   
   loadMessages(): void {
     const userIdNum = Number(this.userId);
     const adminIdNum = Number(this.adminId);
@@ -103,7 +100,9 @@ throw new Error('Method not implemented.');
       .getUserMessages(userIdNum, adminIdNum)
       .subscribe((data: Message[]) => {
         this.messages = data;
-        this.scrollToBottom(); // Scroll to bottom after loading messages
+        if (this.isAtBottom) {
+          this.scrollToBottom(); // Scroll to bottom after loading messages if user is at the bottom
+        }
       });
   }
 
@@ -134,7 +133,9 @@ throw new Error('Method not implemented.');
           (response) => {
             if (!this.isMessageDuplicate(message)) {
               this.messages.push(message);
-              this.scrollToBottom(); // Scroll to bottom after sending a message
+              if (this.isAtBottom) {
+                this.scrollToBottom(); // Scroll to bottom after sending a message if user is at the bottom
+              }
             }
             this.newMessageContent = ''; // Clear input field
           },
@@ -159,14 +160,27 @@ throw new Error('Method not implemented.');
   }
 
   private scrollToBottom(): void {
-    if (this.messageContainer) {
-      try {
-        this.messageContainer.nativeElement.scrollTop =
-          this.messageContainer.nativeElement.scrollHeight;
-      } catch (err) {
-        console.error('Scroll to bottom failed:', err);
-      }
+    try {
+      setTimeout(() => {
+        if (this.messageContainer && this.messageContainer.nativeElement) {
+          this.messageContainer.nativeElement.scroll({
+            top: this.messageContainer.nativeElement.scrollHeight,
+            left: 0,
+            behavior: 'smooth',
+          });
+        }
+      }, 100); // Adjust the delay if necessary to ensure messages are fully rendered before scrolling
+    } catch (error) {
+      console.error('Scroll to bottom error:', error);
     }
+  }
+
+  onScroll(): void {
+    const scrollTop = this.messageContainer.nativeElement.scrollTop;
+    const clientHeight = this.messageContainer.nativeElement.clientHeight;
+    const scrollHeight = this.messageContainer.nativeElement.scrollHeight;
+    
+    this.isAtBottom = scrollTop + clientHeight >= scrollHeight - 5; // Adjust the threshold as needed
   }
 
   shouldShowTimestamp(index: number): boolean {
@@ -184,14 +198,26 @@ throw new Error('Method not implemented.');
     const isNextUser = nextMessage.senderType === 'user';
 
     return currentTime !== nextTime || isCurrentUser !== isNextUser;
+  }  
+
+  shouldShowDate(index: number): boolean {
+    if (index === 0) return true; // Show the date for the first message
+
+    const currentMessage = this.messages[index];
+    const previousMessage = this.messages[index - 1];
+
+    const currentDate = new Date(currentMessage.createdAt).toDateString();
+    const previousDate = new Date(previousMessage.createdAt).toDateString();
+
+    return currentDate !== previousDate;
   }
 
-  // New method to get the last message date
-  getLastMessageDate(): string {
-    if (this.messages.length === 0) return '';
-
-    const lastMessage = this.messages[this.messages.length - 1]; // Get the last message
-    const date = new Date(lastMessage.createdAt);
-    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+  getMessageDate(dateString: string): string {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = { month: 'long' };
+    const month = date.toLocaleDateString(undefined, options);
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return `${month} ${day}, ${year}`;
   }
 }

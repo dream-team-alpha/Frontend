@@ -1,14 +1,16 @@
 .contact-item {
   display: flex;
   align-items: center;
-  padding: 30px 20px ; 
+  padding: 20px 32px ; 
   cursor: pointer;
   transition: background-color 0.3s ease;
   border-bottom: 1px solid #e6e6e6;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
 }
 
 .contact-item:hover {
-  background-color: #f5f9ff; 
+  background-color: #f2f8ff; 
 }
 
 .avatar {
@@ -60,8 +62,6 @@
 
 .user-list-container::-webkit-scrollbar {
   width: 6px;
-  
-  
 }
 
 .user-list-container::-webkit-scrollbar-thumb {
