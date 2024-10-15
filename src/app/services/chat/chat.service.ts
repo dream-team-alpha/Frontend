@@ -9,6 +9,7 @@ import { Message } from 'src/app/components/home/user-chat-box/user-chat-box.com
 })
 export class ChatService {
   private apiUrl = 'http://localhost:5000/api/messages';
+  private feedbackUrl = 'http://localhost:5000/api/feedback';
 
   constructor(private http: HttpClient, private authService:AuthService) {}
 
@@ -24,4 +25,8 @@ export class ChatService {
   sendMessage(message: Message): Observable<any> {
     return this.http.post(`${this.apiUrl}/send`, message);
   }
+  submitFeedback(feedbackData: any) {
+    return this.http.post(`${this.feedbackUrl}/submit`, feedbackData);
+  }
+  
 }

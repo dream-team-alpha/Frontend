@@ -80,32 +80,58 @@
       </form>
     </div>
 
-   <!-- Messages display -->
-<div class="messages" *ngIf="isDetailsSubmitted">
-  <div class="virtual-assistant-message">
-    <h1>
-        Hi, this is our virtual assistant!<span class="emoji">👋</span>
-    </h1>
-    <p>Tell us how we can help.</p>
-</div>
-  <div *ngFor="let msg of messages; let i = index">
-    <p
-      [ngClass]="{
-        sent: msg.senderType === 'user',
-        received: msg.senderType === 'admin'
-      }"
-    >
-      <strong>{{ msg.senderType === 'user' ? 'You' : 'Support' }} : </strong>
-      {{ msg.content }}
-      
-      <!-- Only show timestamp on the last message of the same group -->
-      <span class="timestamp" *ngIf="shouldShowTimestamp(i)">
-        {{ formatDate(msg.createdAt) }}
-      </span>
-    </p>
-  </div>
-</div>
+    <ng-template #feedbackDialog>
+      <h2 mat-dialog-title>Your Feedback</h2>
+      <mat-dialog-content>
+        <p>How was your experience with our support team?</p>
+    
+        <!-- Star Rating System -->
+        <div class="star-rating">
+          <mat-icon *ngFor="let star of [1, 2, 3, 4, 5]; let i = index"
+                    [ngClass]="{'filled': i < rating}"
+                    (click)="setRating(i + 1)">
+            {{ i < rating ? 'star' : 'star_border' }}
+          </mat-icon>
+        </div>
+    
+        <mat-form-field appearance="outline" class="feedback-input">
+          <mat-label>Type your feedback here (optional)...</mat-label>
+          <textarea matInput [(ngModel)]="feedback"></textarea>
+        </mat-form-field>
+      </mat-dialog-content>
+    
+      <mat-dialog-actions align="end">
+        <button mat-button (click)="closeFeedbackModal()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="submitFeedback()">Submit</button>
+      </mat-dialog-actions>
+    </ng-template>
+    
 
+    <!-- Messages display -->
+    <div class="messages" *ngIf="isDetailsSubmitted">
+      <div class="virtual-assistant-message">
+        <h1>Hi, this is our virtual assistant!<span class="emoji">👋</span></h1>
+        <p>Tell us how we can help.</p>
+      </div>
+      <div *ngFor="let msg of messages; let i = index">
+        <p
+          [ngClass]="{
+            sent: msg.senderType === 'user',
+            received: msg.senderType === 'admin'
+          }"
+        >
+          <strong
+            >{{ msg.senderType === "user" ? "You" : "Support" }} :
+          </strong>
+          {{ msg.content }}
+
+          <!-- Only show timestamp on the last message of the same group -->
+          <span class="timestamp" *ngIf="shouldShowTimestamp(i)">
+            {{ formatDate(msg.createdAt) }}
+          </span>
+        </p>
+      </div>
+    </div>
 
     <!-- Message input area, only shown if chat is not closed -->
     <div *ngIf="isDetailsSubmitted && !isChatClosed" class="input-area">

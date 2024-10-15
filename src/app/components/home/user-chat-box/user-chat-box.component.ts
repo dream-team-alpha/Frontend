@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { io } from 'socket.io-client';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { WebSocketService } from 'src/app/services/web-socket/websocket.service';
+import { MatDialog } from '@angular/material/dialog';
 
 export interface User {
   id: string;
@@ -38,6 +39,10 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   isCloseModalOpen = false;
   isChatClosed = false;
 
+  feedback: string = '';
+  rating: number = 0;
+  @ViewChild('feedbackDialog') feedbackDialog!: TemplateRef<any>;
+
   private newMessageSubscription!: Subscription;
   private userCreatedSubscription!: Subscription;
 
@@ -62,7 +67,8 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserService,
     private webSocketService: WebSocketService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -288,6 +294,8 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
         console.error('Error sending message to backend:', error);
       }
     );
+    this.isCloseModalOpen = false;
+    this.dialog.open(this.feedbackDialog);
   }
 
   cancelCloseChat(): void {
@@ -303,6 +311,44 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
     this.webSocketService.connect();
     this.scrollToBottom();
     this.isChatOpen = !this.isChatOpen;
-    window.location.reload(); // This line reloads the page. You may want to handle this differently.
+    window.location.reload();
+  }
+
+  setRating(stars: number): void {
+    this.rating = stars;
+  }
+
+  closeFeedbackModal(): void {
+    this.dialog.closeAll();
+    this.resetFeedback(); // Reset rating and feedback
+  }
+
+  resetFeedback(): void {
+    this.rating = 0;
+    this.feedback = '';
+  }
+
+  submitFeedback(): void {
+    if (this.rating === 0) {
+      console.error('Please provide a star rating before submitting.');
+      return;
+    }
+
+    const feedbackData = {
+      adminId: this.adminId,
+      userId: this.userId,
+      feedback: this.feedback || null,
+      rating: this.rating
+    };
+
+    this.chatService.submitFeedback(feedbackData).subscribe(
+      (response) => {
+        console.log('Feedback submitted successfully:', response);
+        this.closeFeedbackModal();
+      },
+      (error) => {
+        console.error('Error submitting feedback:', error);
+      }
+    );
   }
 }
