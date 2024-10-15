@@ -80,12 +80,16 @@
   margin-bottom: 5px; /* Space between messages */
   background-color: #fff;
 }
-.line.span{
-  color: #999;
+ 
+.last-message-date.span {
+  font-size: 16px;
+  color:#c7c3c3;
+  font-weight: 500;
 }
-.last-message-date{
-  color: #999;
+.line.message.date{
+  color: #c7c3c3;
 }
+
 /* User messages */
 .message.admin {
   align-items: flex-end; /* Align admin messages to the right */
@@ -282,7 +286,7 @@ mat-menu {
 
 .last-message-date span {
   font-size: 16px; /* Change font size as needed */
-  color: #333; /* Change color as needed */
+  color:#999; /* Change color as needed */
   font-weight: 500; /* Change weight if needed */
 }
 

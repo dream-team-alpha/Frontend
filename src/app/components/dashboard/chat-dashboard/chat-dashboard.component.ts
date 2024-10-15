@@ -12,6 +12,7 @@ import { WebSocketService } from 'src/app/services/web-socket/websocket.service'
 import { UserService, User } from 'src/app/services/user/user.service';
 import { Message } from 'src/app/components/home/user-chat-box/user-chat-box.component';
 import { Subscription } from 'rxjs';
+import { ChatStateService } from 'src/app/services/chat-state/chat.state.service';  // Import the new service
 
 @Component({
   selector: 'app-chat-dashboard',
@@ -30,12 +31,14 @@ export class ChatDashboardComponent
   newMessageSubscription: Subscription | undefined;
   private isSubscribed: boolean = false;
   user: User | undefined;
+  isChatClosed: boolean = false; // Added this to manage chat closure state
 
   constructor(
     private route: ActivatedRoute,
     private chatService: ChatService,
     private webSocketService: WebSocketService,
-    private userService: UserService
+    private userService: UserService,
+    private chatStateService: ChatStateService // Inject the service
   ) {}
 
   ngOnInit(): void {
@@ -58,6 +61,11 @@ export class ChatDashboardComponent
         this.isSubscribed = true;
       }
     });
+
+    // Subscribe to chat closed state
+    this.chatStateService.chatClosed$.subscribe((isClosed) => {
+      this.isChatClosed = isClosed; // Update local state
+    });
   }
 
   ngAfterViewChecked() {
@@ -69,6 +77,11 @@ export class ChatDashboardComponent
       this.newMessageSubscription.unsubscribe();
       this.newMessageSubscription = undefined;
     }
+  }
+
+  confirmCloseChat(): void {
+    this.isChatClosed = true; // Set chat state to closed
+    // Optionally, you can also add logic to handle chat closure (like notifying backend)
   }
 
   loadMessages(): void {
@@ -93,31 +106,33 @@ export class ChatDashboardComponent
   }
 
   sendMessage(): void {
-    if (this.newMessageContent.trim() !== '') {
-      const message: Message = {
-        content: this.newMessageContent,
-        senderId: this.adminId,
-        receiverId: this.userId,
-        senderType: 'admin',
-        receiverType: 'user',
-        createdAt: new Date().toISOString(),
-      };
+    if (this.newMessageContent.trim() === '' || this.isChatClosed) {
+      return; // Don't send messages if chat is closed
+    }
 
-      if (!this.isMessageDuplicate(message)) {
-        this.webSocketService.sendMessage(message);
-        this.chatService.sendMessage(message).subscribe(
-          (response) => {
-            if (!this.isMessageDuplicate(message)) {
-              this.messages.push(message);
-              this.scrollToBottom(); // Scroll to bottom after sending a message
-            }
-            this.newMessageContent = ''; // Clear input field
-          },
-          (error) => {
-            console.error('Error sending message to backend:', error);
+    const message: Message = {
+      content: this.newMessageContent,
+      senderId: this.adminId,
+      receiverId: this.userId,
+      senderType: 'admin',
+      receiverType: 'user',
+      createdAt: new Date().toISOString(),
+    };
+
+    if (!this.isMessageDuplicate(message)) {
+      this.webSocketService.sendMessage(message);
+      this.chatService.sendMessage(message).subscribe(
+        (response) => {
+          if (!this.isMessageDuplicate(message)) {
+            this.messages.push(message);
+            this.scrollToBottom(); // Scroll to bottom after sending a message
           }
-        );
-      }
+          this.newMessageContent = ''; // Clear input field
+        },
+        (error) => {
+          console.error('Error sending message to backend:', error);
+        }
+      );
     }
   }
 
@@ -166,7 +181,7 @@ export class ChatDashboardComponent
     if (this.messages.length === 0) return '';
 
     const lastMessage = this.messages[this.messages.length - 1]; // Get the last message
-    const date = new Date(lastMessage.createdAt);
-    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+    const date = new Date(lastMessage.createdAt); // Get the date from the last message
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Format the date as needed
   }
 }
