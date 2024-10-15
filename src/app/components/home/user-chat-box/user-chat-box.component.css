@@ -276,21 +276,15 @@
     right: 20px;
     color: #3498db;
     background-color: #ffffff;
-    border: none;
     padding: 12px 20px;
     cursor: pointer;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
     transition: background 0.3s ease, transform 0.3s ease;
     font-family: 'Inter', sans-serif;
     font-size: 18px;
+    border: 1px solid rgb(148, 51, 245);
+    border-radius: 12px;
 }
-
-.open-chat-btn:hover {
-    border: 2px solid transparent;
-    border-image: linear-gradient(45deg, #fa8bff, #2bd2ff, #2bff88);
-    border-image-slice: 1;
-}
-
 
 .open-chat-btn img {
     width: 30px;
