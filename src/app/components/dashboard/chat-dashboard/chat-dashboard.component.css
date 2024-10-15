@@ -173,7 +173,7 @@
 /* Add this to remove any top border that may appear */
 
 .send-button {
-  background-color: #fff; /* Blue background */
+  background-color: transparent; /* Blue background */
   color: #1E293B;
   opacity: 0.9;
   padding: 10px 15px;
@@ -182,10 +182,6 @@
   margin-left: 10px;
   cursor: pointer;
   transition: background-color 0.3s; /* Transition for hover effect */
-}
-
-.send-button:hover {
-  background-color: #faeeee; /* Darker blue on hover */
 }
 
 /* Avatar and User Name */
