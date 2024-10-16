@@ -27,7 +27,7 @@ export interface Message {
   styleUrls: ['./user-chat-box.component.css'],
 })
 export class UserChatBoxComponent implements OnInit, OnDestroy {
-  adminId: number = 3;
+  adminId: string = '3';
   userId: string = '';
   name: string = '';
   email: string = '';
@@ -35,34 +35,14 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
   isChatOpen = false;
   isDetailsSubmitted = false;
-
   isCloseModalOpen = false;
   isChatClosed = false;
-
   feedback: string = '';
   rating: number = 0;
   @ViewChild('feedbackDialog') feedbackDialog!: TemplateRef<any>;
 
   private newMessageSubscription!: Subscription;
   private userCreatedSubscription!: Subscription;
-
-  shouldShowTimestamp(index: number): boolean {
-    if (index === this.messages.length - 1) {
-      return true; // Always show the timestamp for the last message
-    }
-  
-    const currentMessage = this.messages[index];
-    const nextMessage = this.messages[index + 1];
-  
-    const currentTime = new Date(currentMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const nextTime = new Date(nextMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  
-    const isCurrentUser = currentMessage.senderType === 'user';
-    const isNextUser = nextMessage.senderType === 'user';
-  
-    return currentTime !== nextTime || isCurrentUser !== isNextUser;
-  }
-  
 
   constructor(
     private userService: UserService,
@@ -79,38 +59,29 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
     this.loadMessages();
     this.loadChatClosedState();
 
-    // Ensure we don't connect to WebSocket if the chat is closed
     if (this.isDetailsSubmitted && !this.isChatClosed) {
-      this.webSocketService.connect();
+      this.webSocketService.joinRoom(this.userId, this.adminId);
       this.subscribeToNewMessages();
     }
+
     window.addEventListener('beforeunload', this.onBeforeUnload.bind(this));
   }
 
   ngOnDestroy(): void {
-    if (this.userCreatedSubscription) {
-      this.userCreatedSubscription.unsubscribe();
-    }
-    if (this.newMessageSubscription) {
-      this.newMessageSubscription.unsubscribe();
-    }
-    // Always disconnect if the chat is closed to prevent lingering connections
+    this.cleanupSubscriptions();
     if (!this.isChatClosed) {
       this.webSocketService.disconnect();
     }
-
     window.removeEventListener('beforeunload', this.onBeforeUnload.bind(this));
   }
 
   private subscribeToUserCreation(): void {
     this.userCreatedSubscription = this.webSocketService.userCreated$.subscribe((user: User) => {
       console.log('New user created:', user);
-      // Handle the new user creation event (e.g., update UI, show notification)
     });
   }
 
   private onBeforeUnload(event: BeforeUnloadEvent): void {
-    // Check if the chat is closed before clearing storage.
     if (this.isChatClosed) {
       this.clearLocalStorage();
     }
@@ -120,6 +91,23 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
     localStorage.removeItem('chatMessages');
     localStorage.removeItem('userDetails');
     localStorage.removeItem('isChatClosed');
+  }
+
+  shouldShowTimestamp(index: number): boolean {
+    if (index === this.messages.length - 1) {
+      return true; // Always show the timestamp for the last message
+    }
+  
+    const currentMessage = this.messages[index];
+    const nextMessage = this.messages[index + 1];
+  
+    const currentTime = new Date(currentMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const nextTime = new Date(nextMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+    const isCurrentUser = currentMessage.senderType === 'user';
+    const isNextUser = nextMessage.senderType === 'user';
+  
+    return currentTime !== nextTime || isCurrentUser !== isNextUser;
   }
 
   toggleChat(): void {
@@ -139,24 +127,23 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       console.error('Name and Email are required');
       return;
     }
-
+  
     if (!this.isValidEmail(this.email)) {
       console.error('Email must be a valid Gmail address');
       return;
     }
-
+  
     this.userService.createUser(this.name, this.email).subscribe(
       (response: any) => {
         this.userId = response.id;
         this.isDetailsSubmitted = true;
         this.saveUserDetails();
-
-        // Emit user creation event via WebSocket
+  
         this.webSocketService.emitUserCreated({ id: this.userId, name: this.name, email: this.email });
-
-        // Only connect if the chat is not closed
+  
         if (!this.isChatClosed) {
           this.webSocketService.connect();
+          this.webSocketService.joinRoom(this.userId, this.adminId); // Join the room here
           this.subscribeToNewMessages();
         }
       },
@@ -165,35 +152,34 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       }
     );
   }
+  
 
   private subscribeToNewMessages(): void {
     if (!this.newMessageSubscription) {
-      this.newMessageSubscription = this.webSocketService
-        .receiveNewMessage()
-        .subscribe((message: Message) => {
-          this.messages.push(message);
-          this.scrollToBottom();
-          this.updateMessageCache();
-        });
+      this.newMessageSubscription = this.webSocketService.receiveNewMessage().subscribe((message: Message) => {
+        this.messages.push(message);
+        this.scrollToBottom();
+        this.updateMessageCache();
+      });
     }
   }
 
   sendMessage(): void {
     if (this.message.trim() === '' || this.isChatClosed) return;
-
+  
     const messageData: Message = {
-      senderId: this.userId,
+      senderId: this.userId.toString(),
       receiverId: this.adminId.toString(),
       content: this.message,
       senderType: 'user',
       receiverType: 'admin',
       createdAt: new Date().toISOString(),
     };
+  
     this.chatService.sendMessage(messageData).subscribe(
       (response) => {
         console.log('Message saved to backend:', response);
-        this.messages.push(messageData);
-        this.webSocketService.sendMessage(messageData);
+        this.webSocketService.sendMessage(messageData, this.userId, this.adminId); // Send message to the specific room
         this.updateMessageCache();
         this.scrollToBottom();
         this.message = '';
@@ -203,6 +189,7 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       }
     );
   }
+  
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -277,7 +264,7 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
     this.chatService.sendMessage(closeChatMessage).subscribe(
       (response) => {
         console.log('Message saved to backend:', response);
-        this.webSocketService.sendMessage(closeChatMessage);
+        this.webSocketService.sendMessage(closeChatMessage, this.userId, this.adminId);
         this.messages.push(closeChatMessage);
         this.updateMessageCache();
         this.scrollToBottom();
@@ -285,7 +272,6 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
         this.saveChatClosedState();
         this.isCloseModalOpen = false;
 
-        // Allow some time for WebSocket to finish sending the closing message
         setTimeout(() => {
           this.webSocketService.disconnect();
         }, 100);
@@ -318,9 +304,18 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
     this.rating = stars;
   }
 
+  private cleanupSubscriptions(): void {
+    if (this.newMessageSubscription) {
+      this.newMessageSubscription.unsubscribe();
+    }
+    if (this.userCreatedSubscription) {
+      this.userCreatedSubscription.unsubscribe();
+    }
+  }
+
   closeFeedbackModal(): void {
     this.dialog.closeAll();
-    this.resetFeedback(); // Reset rating and feedback
+    this.resetFeedback();
   }
 
   resetFeedback(): void {
@@ -333,20 +328,19 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       console.error('Please provide a star rating before submitting.');
       return;
     }
-  
+
     const feedbackData = {
       adminId: this.adminId,
       userId: this.userId,
-      feedbackText: this.feedback || null, // Ensure this reads the current value of feedback
-      rating: this.rating
+      feedbackText: this.feedback || null,
+      rating: this.rating,
     };
-  
-    // Log feedbackData to ensure it has the correct values
+
     console.log('Submitting Feedback:', feedbackData);
-  
+
     this.chatService.submitFeedback(feedbackData).subscribe(
       (response) => {
-        console.log('Feedback submitted successfully:', response);
+        console.log('Feedback submitted:', response);
         this.closeFeedbackModal();
       },
       (error) => {
@@ -354,5 +348,5 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
       }
     );
   }
-  
 }
+

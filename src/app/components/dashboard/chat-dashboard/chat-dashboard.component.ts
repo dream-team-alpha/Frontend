@@ -45,59 +45,62 @@ export class ChatDashboardComponent
   ) {}
 
   ngOnInit(): void {
-    // Subscribe to route parameters
     this.route.paramMap.subscribe((params) => {
       this.userId = params.get('id')!;
       this.loadMessages();
       this.setCurrentUser();
-      this.webSocketService.connect();
-
-      if (!this.isSubscribed) {
-        // Subscribe to new messages
-        this.newMessageSubscription = this.webSocketService
-          .receiveNewMessage()
-          .subscribe((message: Message) => {
-            if (!this.isMessageDuplicate(message)) {
-              this.messages.push(message);
-              if (this.isAtBottom) {
-                this.scrollToBottom(); // Scroll to the bottom when a new message is received if user is at the bottom
-              }
-            }
-          });
-        this.isSubscribed = true;
-      }
+      this.webSocketService.joinRoom(this.userId, this.adminId);
+      this.subscribeToNewMessages();
     });
-
     // Subscribe to chat closed state
     this.chatClosedSubscription = this.chatStateService.chatClosed$.subscribe(closed => {
       this.isChatClosed = closed; // Update local state based on the service
     });
   }
 
+  // In ChatDashboardComponent
+  private subscribeToNewMessages(): void {
+    if (!this.newMessageSubscription) {
+      this.newMessageSubscription = this.webSocketService.receiveNewMessage().subscribe((message: Message) => {
+        console.log('Received message in dashboard:', message); // Log received message
+        console.log('Current User ID:', this.userId);
+        if (message.senderId === this.userId) {
+          console.log('Adding message to display:', message); // Log when message is added to display
+          this.messages.push(message);
+          if (this.isAtBottom) {
+            this.scrollToBottom();
+          }
+        }
+      });
+    }
+  }
+  
 
   ngOnDestroy(): void {
-    // Clean up subscriptions
+    this.cleanupSubscriptions();
+    if (!this.isChatClosed) {
+      this.webSocketService.disconnect();
+    }
+  }
+
+  private cleanupSubscriptions(): void {
     if (this.newMessageSubscription) {
       this.newMessageSubscription.unsubscribe();
-      this.newMessageSubscription = undefined;
-    }
-
-    if (this.chatClosedSubscription) {
-      this.chatClosedSubscription.unsubscribe();
     }
   }
 
   confirmCloseChat(): void {
-    this.isChatClosed = true; // Set chat state to closed
-    this.chatStateService.closeChat(); // Notify the service about the chat closure
-    // Optionally, you can also add logic to handle chat closure (like notifying backend)
+    this.isChatClosed = true;
+    this.chatStateService.closeChat();
+    this.webSocketService.emitChatClosed(this.userId, this.adminId);
+    setTimeout(() => {
+      this.webSocketService.disconnect();
+    }, 100);
   }
 
   loadMessages(): void {
-    const userIdNum = Number(this.userId);
-    const adminIdNum = Number(this.adminId);
     this.chatService
-      .getUserMessages(userIdNum, adminIdNum)
+      .getUserMessages(this.userId, this.adminId)
       .subscribe((data: Message[]) => {
         this.messages = data;
         if (this.isAtBottom) {
@@ -128,7 +131,7 @@ export class ChatDashboardComponent
       };
 
       if (!this.isMessageDuplicate(message)) {
-        this.webSocketService.sendMessage(message);
+        this.webSocketService.sendMessage(message, this.userId,this.adminId);
         this.chatService.sendMessage(message).subscribe(
           (response) => {
             if (!this.isMessageDuplicate(message)) {

@@ -13,7 +13,7 @@ export class ChatService {
 
   constructor(private http: HttpClient, private authService:AuthService) {}
 
-  getUserMessages(userId: number, adminId: number): Observable<any> {
+  getUserMessages(userId: string, adminId: string): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`

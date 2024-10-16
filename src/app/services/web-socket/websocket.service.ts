@@ -15,30 +15,44 @@ export class WebSocketService {
   private isChatClosed = false;
 
   constructor() {
-    this.connect()
+    this.connect();
   }
 
   connect(): void {
+    this.isChatClosed = localStorage.getItem('isChatClosed') === 'true';
+    
+    if (this.isChatClosed) {
+      console.log('Chat is closed. WebSocket connection not allowed.');
+      return; // Prevent connection if chat is closed
+    }
+
     this.socket = io('http://localhost:5000');
 
-    this.isChatClosed = localStorage.getItem('isChatClosed') === 'true';
+    this.socket.on('connect_error', (error) => {
+      console.error('Connection error:', error);
+    });
+
+    this.socket.on('connect_timeout', (timeout) => {
+      console.warn('Connection timeout:', timeout);
+    });
 
     this.socket.on('userCreated', (user) => {
       this.userCreatedSubject.next(user);
     });
 
-    if (this.isChatClosed) {
-      console.log('Chat is closed. WebSocket connection not allowed.');
-      this.socket.disconnect();
-      return;
-    }
-
     this.socket.connect();
   }
 
-  sendMessage(message: any): void {
+  joinRoom(userId: string, adminId: string): void {
+    const room = `user_${userId}_admin_${adminId}`;
+    this.socket.emit('joinRoom', { userId, adminId, room });
+    console.log(`Joined room: ${room}`);
+  }
+
+  sendMessage(message: any, userId: string, adminId: string): void {
     if (!this.isChatClosed) {
-      this.socket.emit('sendMessage', message);
+      const room = `user_${userId}_admin_${adminId}`;
+      this.socket.emit('sendMessage', { room, message });
     } else {
       console.log('Cannot send message, chat is closed.');
     }
@@ -57,6 +71,11 @@ export class WebSocketService {
     }
   }
 
+  emitChatClosed(userId: string, adminId: string): void {
+    const room = `user_${userId}_admin_${adminId}`;
+    this.socket.emit('chatClosed', { room });
+  }  
+
   setChatClosed(state: boolean): void {
     this.isChatClosed = state;
   }
@@ -64,6 +83,7 @@ export class WebSocketService {
   setSocketInstance(socketInstance: Socket) {
     this.socket = socketInstance;
   }
+
   emitUserCreated(user: User) {
     this.socket.emit('userCreated', user);
   }
