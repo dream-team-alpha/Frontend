@@ -18,12 +18,10 @@ import { ChatStateService } from 'src/app/services/chat-state/chat.state.service
   templateUrl: './chat-dashboard.component.html',
   styleUrls: ['./chat-dashboard.component.css'],
 })
-export class ChatDashboardComponent
-  implements OnInit, OnDestroy
-{
+export class ChatDashboardComponent implements OnInit, OnDestroy {
   @ViewChild('messageContainer') private messageContainer!: ElementRef;
 
-  userId!: string;
+  userId: any = '';
   adminId: string = '3';
   messages: Message[] = [];
   newMessageContent: string = '';
@@ -42,84 +40,137 @@ export class ChatDashboardComponent
     private webSocketService: WebSocketService,
     private userService: UserService,
     private chatStateService: ChatStateService // Inject the chat state service
-  ) {}
-
-  ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      this.userId = params.get('id')!;
-      this.loadMessages();
-      this.setCurrentUser();
-      this.webSocketService.joinRoom(this.userId, this.adminId);
-      this.subscribeToNewMessages();
-    });
-    // Subscribe to chat closed state
-    this.chatClosedSubscription = this.chatStateService.chatClosed$.subscribe(closed => {
-      this.isChatClosed = closed; // Update local state based on the service
-    });
+  ) {
+    console.log('ChatDashboardComponent initialized');
   }
 
-  // In ChatDashboardComponent
+  ngOnInit(): void {
+    this.webSocketService.connectGlobalSocket(); // Connect to the global socket
+    this.subscribeToNewMessages(); // Subscribe to new messages
+    this.route.url.subscribe((urlSegments) => {
+      const currentUrl = urlSegments.map(segment => segment.path).join('/');
+      if (currentUrl === 'chat') {
+        this.webSocketService.connectGlobalSocket();
+      }
+    });
+  
+    this.fetchData();
+  }
+  
+
+  fetchData() {
+    console.log('fetchData called');
+    this.route.paramMap.subscribe((params) => {
+      console.log('Route params changed', params);
+      this.userId = params.get('id');
+      console.log('Fetched userId:', this.userId);
+      if (this.userId) {
+        this.initializeChat(this.userId); // Initialize chat for the user
+      }
+    });
+
+    this.chatClosedSubscription = this.chatStateService.chatClosed$.subscribe(
+      (closed) => {
+        console.log('Chat closed state changed:', closed);
+        this.isChatClosed = closed; // Update local state based on the service
+      }
+    );
+    this.webSocketService.connectGlobalSocket();
+    console.log('WebSocket connection initialized');
+  }
+
+  private initializeChat(userId: string): void {
+    console.log('initializeChat called with userId:', userId);
+    this.setCurrentUser(userId); // Set current user
+    this.loadMessages(); // Load messages for the current user
+    this.webSocketService.connectUserSocket(userId, this.adminId); // Connect to user-specific socket
+    console.log('Connected WebSocket for userId:', userId, 'and adminId:', this.adminId);
+  }
+
   private subscribeToNewMessages(): void {
-    if (!this.newMessageSubscription) {
-      this.newMessageSubscription = this.webSocketService.receiveNewMessage().subscribe((message: Message) => {
-        console.log('Received message in dashboard:', message); // Log received message
-        console.log('Current User ID:', this.userId);
-        if (message.senderId === this.userId) {
-          console.log('Adding message to display:', message); // Log when message is added to display
-          this.messages.push(message);
-          if (this.isAtBottom) {
-            this.scrollToBottom();
+    console.log('subscribeToNewMessages called');
+    if (!this.newMessageSubscription || this.newMessageSubscription.closed) {
+      this.newMessageSubscription = this.webSocketService.receiveNewMessage().subscribe(
+        (message: Message) => {
+          console.log('Received message in dashboard:', message);
+          if (message.senderId === this.userId && !this.isMessageDuplicate(message)) {
+            console.log('Adding message to display:', message);
+            this.messages.push(message);
+            if (this.isAtBottom) {
+              this.scrollToBottom();
+            }
           }
         }
-      });
+      );
     }
   }
   
 
   ngOnDestroy(): void {
+    console.log('ngOnDestroy called');
     this.cleanupSubscriptions();
     if (!this.isChatClosed) {
-      this.webSocketService.disconnect();
+      console.log('Chat is not closed, disconnecting user WebSocket');
+      this.webSocketService.disconnectUserSocket(this.userId); // Disconnect user-specific socket
     }
   }
 
   private cleanupSubscriptions(): void {
+    console.log('cleanupSubscriptions called');
     if (this.newMessageSubscription) {
       this.newMessageSubscription.unsubscribe();
+      console.log('Unsubscribed from new message subscription');
     }
   }
 
   confirmCloseChat(): void {
+    console.log('confirmCloseChat called');
     this.isChatClosed = true;
     this.chatStateService.closeChat();
     this.webSocketService.emitChatClosed(this.userId, this.adminId);
+    console.log('Emitted chat closed event for userId:', this.userId, 'and adminId:', this.adminId);
     setTimeout(() => {
-      this.webSocketService.disconnect();
+      console.log('Disconnecting WebSocket after chat close');
+      this.webSocketService.disconnectUserSocket(this.userId);
     }, 100);
   }
 
   loadMessages(): void {
-    this.chatService
-      .getUserMessages(this.userId, this.adminId)
-      .subscribe((data: Message[]) => {
+    console.log('loadMessages called');
+    this.chatService.getUserMessages(this.userId, this.adminId).subscribe(
+      (data: Message[]) => {
+        console.log('Messages loaded:', data);
         this.messages = data;
         if (this.isAtBottom) {
           this.scrollToBottom(); // Scroll to bottom after loading messages if user is at the bottom
         }
-      });
+      },
+      (error) => {
+        console.error('Error loading messages:', error);
+      }
+    );
   }
 
-  setCurrentUser(): void {
-    const userIdNum = Number(this.userId);
+  setCurrentUser(userId: string): void {
+    console.log('setCurrentUser called with userId:', userId);
+    const userIdNum = Number(userId);
     if (isNaN(userIdNum)) {
+      console.warn('Invalid userId:', userId);
       return; // No action if userId is invalid
     }
-    this.userService.getUserById(userIdNum).subscribe((user) => {
-      this.user = user;
-    });
+    this.userService.getUserById(userIdNum).subscribe(
+      (user) => {
+        console.log('User fetched:', user);
+        this.user = user; // Set current user
+      },
+      (error) => {
+        console.error('Error fetching user:', error);
+      }
+    );
   }
 
   sendMessage(): void {
+    console.log('sendMessage called with content:', this.newMessageContent);
     if (this.newMessageContent.trim() !== '' && !this.isChatClosed) {
       const message: Message = {
         content: this.newMessageContent,
@@ -127,13 +178,15 @@ export class ChatDashboardComponent
         receiverId: this.userId,
         senderType: 'admin',
         receiverType: 'user',
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString().slice(0, 19).replace('T', ' '),
       };
+      console.log('Message to be sent:', message);
 
       if (!this.isMessageDuplicate(message)) {
-        this.webSocketService.sendMessage(message, this.userId,this.adminId);
+        this.webSocketService.sendMessage(message, this.userId, this.adminId);
         this.chatService.sendMessage(message).subscribe(
           (response) => {
+            console.log('Message sent to backend:', response);
             if (!this.isMessageDuplicate(message)) {
               this.messages.push(message);
               if (this.isAtBottom) {
@@ -146,12 +199,16 @@ export class ChatDashboardComponent
             console.error('Error sending message to backend:', error);
           }
         );
+      } else {
+        console.warn('Duplicate message detected, not sending');
       }
+    } else {
+      console.warn('Message content is empty or chat is closed');
     }
   }
 
   private isMessageDuplicate(newMessage: Message): boolean {
-    return this.messages.some(
+    const isDuplicate = this.messages.some(
       (msg) =>
         msg.content === newMessage.content &&
         msg.senderId === newMessage.senderId &&
@@ -160,6 +217,7 @@ export class ChatDashboardComponent
           new Date(msg.createdAt).getTime() - new Date(newMessage.createdAt).getTime()
         ) < 1000
     );
+    return isDuplicate;
   }
 
   private scrollToBottom(): void {
@@ -182,7 +240,6 @@ export class ChatDashboardComponent
     const scrollTop = this.messageContainer.nativeElement.scrollTop;
     const clientHeight = this.messageContainer.nativeElement.clientHeight;
     const scrollHeight = this.messageContainer.nativeElement.scrollHeight;
-    
     this.isAtBottom = scrollTop + clientHeight >= scrollHeight - 5; // Adjust the threshold as needed
   }
 
@@ -194,14 +251,21 @@ export class ChatDashboardComponent
     const currentMessage = this.messages[index];
     const nextMessage = this.messages[index + 1];
 
-    const currentTime = new Date(currentMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const nextTime = new Date(nextMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const currentTime = new Date(currentMessage.createdAt).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const nextTime = new Date(nextMessage.createdAt).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
 
     const isCurrentUser = currentMessage.senderType === 'user';
     const isNextUser = nextMessage.senderType === 'user';
 
-    return currentTime !== nextTime || isCurrentUser !== isNextUser;
-  }  
+    const shouldShow = currentTime !== nextTime || isCurrentUser !== isNextUser;
+    return shouldShow;
+  }
 
   shouldShowDate(index: number): boolean {
     if (index === 0) return true; // Show the date for the first message
@@ -212,7 +276,8 @@ export class ChatDashboardComponent
     const currentDate = new Date(currentMessage.createdAt).toDateString();
     const previousDate = new Date(previousMessage.createdAt).toDateString();
 
-    return currentDate !== previousDate;
+    const shouldShow = currentDate !== previousDate;
+    return shouldShow;
   }
 
   getMessageDate(dateString: string): string {
@@ -221,6 +286,7 @@ export class ChatDashboardComponent
     const month = date.toLocaleDateString(undefined, options);
     const day = date.getDate();
     const year = date.getFullYear();
-    return `${month} ${day}, ${year}`;
+    const formattedDate = `${month} ${day}, ${year}`;
+    return formattedDate;
   }
 }

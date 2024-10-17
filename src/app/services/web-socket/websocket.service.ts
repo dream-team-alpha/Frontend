@@ -7,7 +7,8 @@ import { User } from 'src/app/components/home/user-chat-box/user-chat-box.compon
   providedIn: 'root',
 })
 export class WebSocketService {
-  private socket!: Socket;
+  private globalSocket!: Socket;
+  private userSockets: Map<string, Socket> = new Map();
   private messageSubject = new Subject<any>();
   public message$ = this.messageSubject.asObservable();
   private userCreatedSubject = new Subject<any>();
@@ -15,10 +16,10 @@ export class WebSocketService {
   private isChatClosed = false;
 
   constructor() {
-    this.connect();
+    this.connectGlobalSocket();
   }
 
-  connect(): void {
+  connectGlobalSocket(): void {
     this.isChatClosed = localStorage.getItem('isChatClosed') === 'true';
     
     if (this.isChatClosed) {
@@ -26,54 +27,104 @@ export class WebSocketService {
       return; // Prevent connection if chat is closed
     }
 
-    this.socket = io('http://localhost:5000');
+    this.globalSocket = io('http://localhost:5000');
 
-    this.socket.on('connect_error', (error) => {
-      console.error('Connection error:', error);
+    this.globalSocket.on('connect_error', (error) => {
+      console.error('Global socket connection error:', error);
     });
 
-    this.socket.on('connect_timeout', (timeout) => {
-      console.warn('Connection timeout:', timeout);
+    this.globalSocket.on('connect_timeout', (timeout) => {
+      console.warn('Global socket connection timeout:', timeout);
     });
 
-    this.socket.on('userCreated', (user) => {
+    this.globalSocket.on('receiveMessage', (message) => {
+      this.messageSubject.next(message);
+    });
+
+    this.globalSocket.on('userCreated', (user) => {
       this.userCreatedSubject.next(user);
     });
 
-    this.socket.connect();
+    this.globalSocket.connect()
   }
+
+  connectUserSocket(userId: string, adminId: string): void {
+    if (this.userSockets.has(userId)) {
+      console.warn(`Socket already exists for user: ${userId}`);
+      return; // Prevent duplicate connections
+    }
+
+    const userSocket = io('http://localhost:5000');
+    this.userSockets.set(userId, userSocket);
+
+    userSocket.on('connect', () => {
+      console.log(`Connected to socket for user: ${userId}`);
+      this.joinRoom(userId, adminId);
+    });
+
+    userSocket.on('connect_error', (error) => {
+      console.error(`Connection error for user ${userId}:`, error);
+    });
+
+    userSocket.on('connect_timeout', (timeout) => {
+      console.warn(`Connection timeout for user ${userId}:`, timeout);
+    });
+
+    userSocket.on('receiveMessage', (message) => {
+      this.messageSubject.next(message);
+    });
+
+    // Handle disconnection
+    userSocket.on('disconnect', () => {
+      console.log(`Disconnected from socket for user: ${userId}`);
+      this.userSockets.delete(userId); // Remove from active sockets
+    });
+  }
+
 
   joinRoom(userId: string, adminId: string): void {
     const room = `user_${userId}_admin_${adminId}`;
-    this.socket.emit('joinRoom', { userId, adminId, room });
-    console.log(`Joined room: ${room}`);
+    if (this.userSockets.has(userId)) {
+      this.userSockets.get(userId)!.emit('joinRoom', { userId, adminId, room });
+      console.log(`Joined room: ${room}`);
+    }
   }
 
   sendMessage(message: any, userId: string, adminId: string): void {
     if (!this.isChatClosed) {
       const room = `user_${userId}_admin_${adminId}`;
-      this.socket.emit('sendMessage', { room, message });
+      if (this.userSockets.has(userId)) {
+        this.userSockets.get(userId)!.emit('sendMessage', { room, message });
+      } else {
+        console.warn(`No socket found for user: ${userId}`);
+      }
     } else {
       console.log('Cannot send message, chat is closed.');
     }
   }
-
   receiveNewMessage() {
-    this.socket.on('receiveMessage', (message) => {
+    this.globalSocket.on('receiveMessage', (message) => {
       this.messageSubject.next(message);
     });
     return this.message$;
   }
 
-  disconnect(): void {
-    if (this.socket) {
-      this.socket.disconnect();
+  disconnectUserSocket(userId: string): void {
+    if (this.userSockets.has(userId)) {
+      this.userSockets.get(userId)!.disconnect();
+      this.userSockets.delete(userId); // Remove from active sockets
+    }
+  }
+
+  disconnectGlobalSocket(): void {
+    if (this.globalSocket) {
+      this.globalSocket.disconnect();
     }
   }
 
   emitChatClosed(userId: string, adminId: string): void {
     const room = `user_${userId}_admin_${adminId}`;
-    this.socket.emit('chatClosed', { room });
+    this.globalSocket.emit('chatClosed', { room });
   }  
 
   setChatClosed(state: boolean): void {
@@ -81,10 +132,10 @@ export class WebSocketService {
   }
 
   setSocketInstance(socketInstance: Socket) {
-    this.socket = socketInstance;
+    this.globalSocket = socketInstance;
   }
 
   emitUserCreated(user: User) {
-    this.socket.emit('userCreated', user);
+    this.globalSocket.emit('userCreated', user);
   }
 }

@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { User } from 'src/app/services/user/user.service';
+import { WebSocketService } from 'src/app/services/web-socket/websocket.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -16,7 +17,7 @@ export class SidebarComponent implements OnInit {
   adminName: string = ''; 
   adminAvatar: string = ''; // Variable to hold the avatar URL
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService, private webSocketService: WebSocketService) {}
 
   ngOnInit(): void {
     this.getAdminProfile(this.adminId);
@@ -37,5 +38,6 @@ export class SidebarComponent implements OnInit {
   onUserSelected(user: User): void {
     this.userSelected.emit(user);
     this.router.navigate([`/support-team-admin-dashboard/chat/${user.id}`]);
+  this.webSocketService.connectGlobalSocket()
   }
 }
