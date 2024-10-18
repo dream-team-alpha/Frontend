@@ -1,4 +1,4 @@
-<div class="chat-box" [class.active]="isChatOpen" cdkDrag>
+<div class="chat-box" [class.active]="isChatOpen">
   <div class="chat-header" cdkDragHandle>
     <div class="avatar">
       <img
@@ -10,9 +10,9 @@
       <div class="name">Support-Team</div>
       <div class="online-status">We're online</div>
     </div>
-    <div class="actions">
+    <!-- <div class="actions">
       <button class="toggle-btn" (click)="toggleChat()">⬇️</button>
-    </div>
+    </div> -->
     <div class="actions" *ngIf="!isChatClosed && isDetailsSubmitted">
       <button class="toggle-btn" (click)="closeChat()">❎</button>
     </div>
@@ -168,7 +168,9 @@
   </div>
 </div>
 
-<button class="open-chat-btn" *ngIf="!isChatOpen" (click)="toggleChat()">
+<!-- <button class="open-chat-btn" *ngIf="!isChatOpen" (click)="toggleChat()">
   <img src="/assets/bubble-chat.png" alt="" />
   Contact us!
-</button>
+</button> -->
+
+<router-outlet></router-outlet>

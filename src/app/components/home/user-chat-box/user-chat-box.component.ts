@@ -32,7 +32,7 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   email: string = '';
   message: string = '';
   messages: Message[] = [];
-  isChatOpen = false;
+  isChatOpen = true;
   isDetailsSubmitted = false;
   isCloseModalOpen = false;
   isChatClosed = false;
@@ -116,10 +116,10 @@ export class UserChatBoxComponent implements OnInit, OnDestroy {
   
 
   toggleChat(): void {
-    this.isChatOpen = !this.isChatOpen;
-    if (this.isChatOpen) {
-      this.scrollToBottom();
-    }
+    // this.isChatOpen = !this.isChatOpen;
+    // if (this.isChatOpen) {
+    //   this.scrollToBottom();
+    // }
   }
 
   isValidEmail(email: string): boolean {

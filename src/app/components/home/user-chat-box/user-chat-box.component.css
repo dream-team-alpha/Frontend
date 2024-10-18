@@ -1,11 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
 .chat-box {
-    width: 360px;
-    height: 550px;
+    width: 400px;
+    height: 580px;
     position: fixed;
-    bottom: 20px;
-    right: 30px;
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
